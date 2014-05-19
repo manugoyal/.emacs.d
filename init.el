@@ -10,12 +10,13 @@
 ;;
 ;;; Code:
 
-;; Sets the locations of the .emacs.d directory and the downloads directory
+;; Sets the locations of the .emacs.d directory and other variables
 (defconst dotfiles-dir (file-name-directory (or (buffer-file-name) load-file-name)))
 (defconst downloads-dir (concat dotfiles-dir "downloads/"))
+(defconst configuration-file (concat dotfiles-dir "README.org"))
 
 ;; Loads CEDET before loading anything else. We configure it in
-;; configuration.org
+;; configuration-file
 (load-file (concat downloads-dir "cedet/cedet-devel-load.el"))
 (require 'ede)
 (require 'semantic)
@@ -33,11 +34,11 @@
 (load custom-file)
 
 ;; Load up Org Mode and Org Babel for elisp embedded in
-;; configuration.org
+;; configuration-file
 (require 'org-id)
 (require 'org-element)
 (require 'org)
-(org-babel-load-file (concat dotfiles-dir "configuration.org"))
+(org-babel-load-file configuration-file)
 
 (provide 'init)
 ;; init.el ends here

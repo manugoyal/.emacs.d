@@ -435,3 +435,10 @@
                                       (set-fill-column 100)))))
                                  
    #+end_src
+** Google
+   #+begin_src emacs-lisp
+     (if (file-exists-p "/google/src/files/head/depot/eng/elisp/google.el")
+         (progn
+          (load-file "/google/src/files/head/depot/eng/elisp/google.el")
+          (setq p4-use-p4config-exclusively t)))
+   #+end_src

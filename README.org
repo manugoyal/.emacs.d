@@ -436,9 +436,21 @@
                                  
    #+end_src
 ** Google
+   Sets up the google work environment. You must run prodaccess before
+   this will work.
    #+begin_src emacs-lisp
      (if (file-exists-p "/google/src/files/head/depot/eng/elisp/google.el")
          (progn
-          (load-file "/google/src/files/head/depot/eng/elisp/google.el")
-          (setq p4-use-p4config-exclusively t)))
+           ;; Load the emacs package
+           (load-file "/google/src/files/head/depot/eng/elisp/google.el")
+           (setq p4-use-p4config-exclusively t)
+           ;; Set up blaze inside emacs
+           (require 'google3-build)
+           (setq google-build-system "blaze")
+           ;; Initilaize grok, which allows you to browse code inside emacs
+           (grok-init)
+           ;; csearch
+           (require 'csearch)
+           ))
+
    #+end_src

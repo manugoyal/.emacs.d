@@ -96,6 +96,7 @@
 ** Multiple cursors
    Similar to what you would find in SublimeText
    #+begin_src emacs-lisp
+     (require 'multiple-cursors)
      (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
      (define-key my-keys-minor-mode-map (kbd "C->") 'mc/mark-next-like-this)
      (define-key my-keys-minor-mode-map (kbd "C-<") 'mc/mark-previous-like-this)
@@ -208,22 +209,10 @@
                    (cons "M-y" 'term-send-raw-meta)
                    (cons "C-y" 'term-send-raw))))
    #+end_src
-** Gnus
+** Fill Column
+   The default fill column should be 80 characters
    #+begin_src emacs-lisp
-     (setq gnus-select-method
-           '(nnimap "gmail"
-                    (nnimap-address "imap.gmail.com")
-                    (nnimap-server-port 993)
-                    (nnimap-stream ssl)))
-     
-     (setq message-send-mail-function 'smtpmail-send-it
-           smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
-           smtpmail-auth-credentials '(("smtp.gmail.com" 587
-                                        "manu.goyal2013@gmail.com" nil))
-           smtpmail-default-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-server "smtp.gmail.com"
-           smtpmail-smtp-service 587
-           gnus-ignored-newsgroups "^to\\.\\|^[0-9. ]+\\( \\|$\\)\\|^[\"]\"[#'()]")
+     (setq-default fill-column 80)
    #+end_src
 * Languages
   Language-specific settings
@@ -243,6 +232,7 @@
        (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
        (add-hook 'css-mode-hook 'ac-css-mode-setup)
        (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+       (ac-flyspell-workaround)
        (global-auto-complete-mode t)
        )
      (my-ac-config)
@@ -452,5 +442,4 @@
            ;; csearch
            (require 'csearch)
            ))
-
    #+end_src

@@ -124,12 +124,6 @@
      (require 'flyspell)
      (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
    #+end_src
-** wrap-region
-   wrap-region mode allows you to easily surround a region with
-   paretheses, brackets, etc.
-   #+begin_src emacs-lisp
-     (wrap-region-global-mode)
-   #+end_src
 ** Color scheme
    Sets color scheme to solarized-light
    #+begin_src emacs-lisp
@@ -214,6 +208,10 @@
    #+begin_src emacs-lisp
      (setq-default fill-column 80)
    #+end_src
+** Autopair
+   #+begin_src emacs-lisp
+     (autopair-global-mode)
+   #+end_src
 * Languages
   Language-specific settings
 ** Auto-complete
@@ -288,13 +286,27 @@
    #+end_src
 ** HTML/XML/Javascript
    #+begin_src emacs-lisp
-     (require 'sgml-mode)
-     (require 'js)
-     (defalias 'html-mode 'sgml-mode)
-     (defalias 'xml-mode 'sgml-mode)
      ;; Quickly switch between javascript and html mode
-     (define-key sgml-mode-map (kbd "C-c j") 'javascript-mode)
-     (define-key js-mode-map (kbd "C-c h") 'html-mode)
+     (require 'web-mode)
+     ;; Enable web-mode for jsx, since it seems like the only mode that can correctly
+     ;; recognize and indent html inside javascript.
+     (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+     (defadvice web-mode-highlight-part (around tweak-jsx activate)
+       (if (equal web-mode-content-type "jsx")
+           (let ((web-mode-enable-part-face nil))
+             ad-do-it)
+         ad-do-it))
+
+     ;; Web mode seems to have some bug where it immediately starts searching for a
+     ;; closing angle bracking after entering a character after an opening angle
+     ;; bracket, so you have to insert a closing bracket immediately after the
+     ;; closing one, then start typing. Thus we add angle brackets to autopair to do
+     ;; this for us.
+     (add-hook 'web-mode-hook
+               #'(lambda ()
+                   (push '(?< . ?>)
+                         (getf autopair-extra-pairs :code))))
+
    #+end_src
 ** OCaml
    Loads packages and sets up environment variables using opam, if it

@@ -28,6 +28,7 @@
  '(fill-column 80)
  '(flycheck-check-syntax-automatically (quote (save mode-enabled)))
  '(flycheck-clang-standard-library "libc++")
+ '(flycheck-disabled-checkers (quote (html-tidy)))
  '(flycheck-flake8rc "~/.config/flake8")
  '(global-linum-mode t)
  '(global-undo-tree-mode t)

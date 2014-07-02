@@ -1,6 +1,7 @@
 *~
 *.elc
 README.el
+<<<<<<< HEAD
 .#*
 .DS_Store
 .python-environments
@@ -11,3 +12,4 @@ ede-projects.el
 image-dired/
 srecode-map.el
 tramp
+elpa/

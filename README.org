@@ -28,29 +28,42 @@
 ** CEDET
    Configures CEDET
    #+begin_src emacs-lisp
+     (require 'semantic)
+     (require 'ede/cpp-root)
      ;; Creates the directory "~/.emacs.semanticdb" to store the tags
      (when (not (file-exists-p "~/.emacs.semanticdb"))
        (make-directory "~/.emacs.semanticdb"))
      (setq semanticdb-default-save-directory "~/.emacs.semanticdb")
-     
-     ;; Activate semantic
-     (semantic-mode 1)
-     ;; Semantic key bindings
-     (define-key semantic-mode-map [(control return)] 'semantic-ia-complete-symbol-menu)
-     (define-key semantic-mode-map (kbd "C-c j") 'semantic-ia-fast-jump)
-     (define-key semantic-mode-map (kbd "C-c r") 'semantic-symref)
-     (define-key semantic-mode-map (kbd "C-c l") 'semantic-complete-jump)
-     (define-key semantic-mode-map (kbd "C-c p") 'semantic-analyze-proto-impl-toggle)
-     ;; Add semantic completions to auto complete
+     ;; Activate semantic and ede
+     (semantic-mode t)
+     (global-ede-mode t)
+     ;; Add keybinding for semantic-ia-fast-jump, since that seems to be the most
+     ;; accurate code navigation function
+     (define-key semantic-mode-map (kbd "C-c , j") 'semantic-ia-fast-jump)
+   #+end_src
+** Auto-complete
+   Loads and configures auto complete. Other settings for auto
+   complete can be found in custom.el
+   #+begin_src emacs-lisp
      (require 'auto-complete)
-     (add-to-list 'ac-sources 'ac-source-semantic)
-     ;; C++ extra include paths
-     (semantic-add-system-include "/usr/lib/c++/v1" 'c++-mode)
-     (semantic-load-enable-primary-ectags-support)
-     ;; EDE
-     (global-ede-mode 1)
-     (ede-enable-generic-projects)
-     
+     (require 'auto-complete-config)
+     (defun my-ac-config ()
+       (setq-default 
+        ac-sources 
+        '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)
+        )
+       (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
+       (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
+       (add-hook 'css-mode-hook 'ac-css-mode-setup)
+       (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+       (ac-flyspell-workaround)
+       (global-auto-complete-mode t)
+       )
+     (my-ac-config)
+   #+end_src
+** Flycheck
+   #+begin_src emacs-lisp
+     (add-hook 'prog-mode-hook 'flycheck-mode)
    #+end_src
 ** Mac OSX key bindings
    Sets the alt, command, and super modifiers to meta
@@ -124,6 +137,11 @@
      (require 'flyspell)
      (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
    #+end_src
+** autopair
+   Autopair automatically closes and wraps regions in specific delimeters
+   #+begin_src emacs-lisp
+     (autopair-global-mode)
+   #+end_src
 ** Color scheme
    Sets color scheme to solarized-light
    #+begin_src emacs-lisp
@@ -145,12 +163,10 @@
      (require 'dired+)
    #+end_src
 ** Window navigation
-   Navigate to different windows and frames
+   Navigate to different windows and frames. We copy the
+   windmove-default-keybindings and framemove-default-keybindings functions and
+   modify them to use my-keys-minor-mode-map
    #+begin_src emacs-lisp
-     ;; We copy the windmove-default-keybindings and
-     ;; framemove-default-keybindings functions and modify them to use
-     ;; my-keys-minor-mode-map
-     
      ;; windmove
      ((lambda ()
         (setq modifier 'shift)
@@ -159,7 +175,6 @@
         (define-key my-keys-minor-mode-map (vector (list modifier 'up))    'windmove-up)
         (define-key my-keys-minor-mode-map (vector (list modifier 'down))  'windmove-down))
       )
-     
      ;; framemove
      ((lambda ()
         (setq modifier 'meta)
@@ -168,13 +183,11 @@
         (define-key my-keys-minor-mode-map (vector (list modifier 'left))  'fm-left-frame)
         (define-key my-keys-minor-mode-map (vector (list modifier 'right)) 'fm-right-frame))
       )
-     
+
    #+end_src
 ** Encoding
+   Sets everything to UTF-8 encoding
    #+begin_src emacs-lisp
-     (custom-set-variables
-      '(current-language-environment "UTF-8")
-      '(locale-coding-system 'utf-8))
      (set-terminal-coding-system 'utf-8)
      (set-keyboard-coding-system 'utf-8)
      (set-selection-coding-system 'utf-8)
@@ -186,6 +199,7 @@
      (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
    #+end_src
 ** Terminal settings
+   Keybindings that make terminals in emacs work better
    #+begin_src emacs-lisp
      (when (require 'term nil t) ; only if term can be loaded..
        (setq term-bind-key-alist
@@ -208,37 +222,8 @@
    #+begin_src emacs-lisp
      (setq-default fill-column 80)
    #+end_src
-** Autopair
-   #+begin_src emacs-lisp
-     (autopair-global-mode)
-   #+end_src
 * Languages
   Language-specific settings
-** Auto-complete
-   Loads and configures auto complete. Other settings for auto
-   complete can be found in custom.el
-   #+begin_src emacs-lisp
-     (require 'auto-complete)
-     (require 'auto-complete-config)
-     (defun my-ac-config ()
-       (setq-default ac-sources 
-                     '(ac-source-abbrev 
-                       ac-source-dictionary 
-                       ac-source-words-in-same-mode-buffers 
-                       ac-source-semantic))
-       (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-       (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
-       (add-hook 'css-mode-hook 'ac-css-mode-setup)
-       (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-       (ac-flyspell-workaround)
-       (global-auto-complete-mode t)
-       )
-     (my-ac-config)
-   #+end_src
-** Flycheck
-   #+begin_src emacs-lisp
-     (add-hook 'prog-mode-hook 'flycheck-mode)
-   #+end_src
 ** Python
    #+begin_src emacs-lisp
      ;; Loads pymacs
@@ -249,7 +234,7 @@
      ;; We copied the elpy function to integrate ipython
      (defun elpy-use-ipython (&optional ipython)
        "Set defaults to use IPython instead of the standard interpreter.
-     
+
      With prefix arg, prompt for the command to use."
        (interactive (list (when current-prefix-arg
                             (read-file-name "IPython command: "))))
@@ -259,7 +244,7 @@
            ;; Emacs 24 until 24.3
            (setq python-python-command ipython)
          ;; Emacs 24.3 and onwards.
-     
+
          ;; This is from the python.el commentary.
          ;; Settings for IPython 0.11:
          (setq python-shell-interpreter ipython
@@ -349,92 +334,14 @@
   Project-specific settings
 ** Tachyon
    #+begin_src emacs-lisp
-     (c-add-style "tachyon"
-                 '((c-basic-offset . 2)     ; Guessed value
-                   (c-offsets-alist
-                    (annotation-top-cont . 0) ; Guessed value
-                    (arglist-intro . ++)    ; Guessed value
-                    (block-close . 0)       ; Guessed value
-                    (class-close . 0)       ; Guessed value
-                    (defun-block-intro . +) ; Guessed value
-                    (func-decl-cont . ++)   ; Guessed value
-                    (inclass . +)           ; Guessed value
-                    (inline-close . 0)      ; Guessed value
-                    (statement . 0)         ; Guessed value
-                    (statement-block-intro . +) ; Guessed value
-                    (statement-cont . ++)   ; Guessed value
-                    (topmost-intro . 0)     ; Customized value
-                    (topmost-intro-cont . ++) ; Guessed value
-                    (access-label . -)
-                    (annotation-var-cont . +)
-                    (arglist-close . c-lineup-close-paren)
-                    (arglist-cont c-lineup-gcc-asm-reg 0)
-                    (arglist-cont-nonempty . c-lineup-arglist)
-                    (block-open . 0)
-                    (brace-entry-open . 0)
-                    (brace-list-close . 0)
-                    (brace-list-entry . 0)
-                    (brace-list-intro . +)
-                    (brace-list-open . 0)
-                    (c . c-lineup-C-comments)
-                    (case-label . 0)
-                    (catch-clause . 0)
-                    (class-open . 0)
-                    (comment-intro . c-lineup-comment)
-                    (composition-close . 0)
-                    (composition-open . 0)
-                    (cpp-define-intro c-lineup-cpp-define +)
-                    (cpp-macro . -1000)
-                    (cpp-macro-cont . +)
-                    (defun-close . 0)
-                    (defun-open . 0)
-                    (do-while-closure . 0)
-                    (else-clause . 0)
-                    (extern-lang-close . 0)
-                    (extern-lang-open . 0)
-                    (friend . 0)
-                    (incomposition . +)
-                    (inexpr-class . +)
-                    (inexpr-statement . +)
-                    (inextern-lang . +)
-                    (inher-cont . c-lineup-multi-inher)
-                    (inher-intro . +)
-                    (inlambda . c-lineup-inexpr-block)
-                    (inline-open . +)
-                    (inmodule . +)
-                    (innamespace . +)
-                    (knr-argdecl . 0)
-                    (knr-argdecl-intro . +)
-                    (label . 2)
-                    (lambda-intro-cont . +)
-                    (member-init-cont . c-lineup-multi-inher)
-                    (member-init-intro . +)
-                    (module-close . 0)
-                    (module-open . 0)
-                    (namespace-close . 0)
-                    (namespace-open . 0)
-                    (objc-method-args-cont . c-lineup-ObjC-method-args)
-                    (objc-method-call-cont c-lineup-ObjC-method-call-colons c-lineup-ObjC-method-call +)
-                    (objc-method-intro .
-                                       [0])
-                    (statement-case-intro . +)
-                    (statement-case-open . 0)
-                    (stream-op . c-lineup-streamop)
-                    (string . -1000)
-                    (substatement . +)
-                    (substatement-label . 2)
-                    (substatement-open . +)
-                    (template-args-cont c-lineup-template-args +)))
-                 )
-     
      ;; Sets Tachyon settings for java files in the tachyon directory
      (defconst tachyon-dir (expand-file-name "~/programming/tachyon"))
-     (add-hook 'java-mode-hook (lambda ()
-                                 "Sets tachyon as the java style if in the tachyon directory"
-                                 (if (and (stringp buffer-file-name) (string-prefix-p tachyon-dir buffer-file-name))
-                                     (progn
-                                      (c-set-style "tachyon")
-                                      (set-fill-column 100)))))
+     (add-hook 'java-mode-hook
+               (lambda ()
+                 "Sets tachyon as the java style if in the tachyon directory"
+                 (if (and (stringp buffer-file-name)
+                          (string-prefix-p tachyon-dir buffer-file-name))
+                     (set-fill-column 100))))
                                  
    #+end_src
 ** Google

@@ -60,7 +60,7 @@
 	       ((:url . "http://github.com/defunkt/coffee-mode")
 		(:keywords "coffeescript" "major" "mode"))])
  (company .
-	  [(0 8 0)
+	  [(0 8 1)
 	   ((emacs
 	     (24 1))
 	    (cl-lib
@@ -222,6 +222,13 @@
 		nil "Analyze the memory usage of Emacs in various ways" single
 		((:url . "http://elpa.gnu.org/packages/memory-usage.html")
 		 (:keywords "maint"))])
+ (metar .
+	[(0 1)
+	 ((cl-lib
+	   (0 5)))
+	 "Retrieve and decode METAR weather information" single
+	 ((:url . "http://elpa.gnu.org/packages/metar.html")
+	  (:keywords "comm"))])
  (minimap .
 	  [(1 2)
 	   nil "Sidebar showing a \"mini-map\" of a buffer" single
@@ -262,7 +269,7 @@
 	    ((:url . "http://elpa.gnu.org/packages/omn-mode.html")
 	     (:keywords))])
  (org .
-      [(20140623)
+      [(20140630)
        nil "Outline-based notes management and organizer" tar nil])
  (osc .
       [(0 1)

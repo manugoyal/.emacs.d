@@ -4,10 +4,10 @@
 #+OPTIONS: num:nil ^:nil
 
 * General
-  General editing and system settings
-** my-keys-minor-mode
-   We define a minor mode for personal keybindings, so that they
-   always take precedence over major modes and other minor modes
+  Here we have general editing and system settings.
+** Personal Keybinding Map
+   We define a minor mode for personal keybindings, so that they always take
+   precedence over major modes and other minor modes
    #+begin_src emacs-lisp
      ;; Based on http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
      (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
@@ -16,17 +16,18 @@
        t " my-keys" 'my-keys-minor-mode-map)
      (my-keys-minor-mode 1)
    #+end_src
-** Environment variables
-   Uses the exec-path-from-shell package to minimize
-   redundancies between emacs and the shell
+** Shell Environment variables
+   We use the exec-path-from-shell package to grab environment variable
+   definitions from the shell environment.
    #+begin_src emacs-lisp
      (defvar exec-path-from-shell-variables
        '("PATH" "MANPATH" "GOPATH" "CXX" "LD_LIBRARY_PATH" "PYTHONPATH"
-         "hlalib" "hlainc" "PATH_TO_MEMSQL" "GOROOT"))
+	 "hlalib" "hlainc" "PATH_TO_MEMSQL" "GOROOT"))
      (exec-path-from-shell-initialize)
    #+end_src
 ** CEDET
-   Configures CEDET
+   We configure CEDET, a suite of semantic analysis and development tools for
+   emacs.
    #+begin_src emacs-lisp
      (require 'semantic)
      (require 'ede/cpp-root)
@@ -41,73 +42,94 @@
      ;; accurate code navigation function
      (define-key semantic-mode-map (kbd "C-c , j") 'semantic-ia-fast-jump)
    #+end_src
-** Auto-complete
-   Loads and configures auto complete. Other settings for auto
-   complete can be found in custom.el
+** TRAMP
+   We configure TRAMP, a package that provides transparent remote file access
+   over various protocols.
+   #+begin_src emacs-lisp
+     ;; Tramp saves backups to the local directory, for speed.
+     (setq tramp-auto-save-directory "\"/tmp\"")
+   #+end_src
+** General Symbol Completion
+   We use the auto-complete package. In addition to generic auto-completion, it
+   has settings for specific languages as well.
    #+begin_src emacs-lisp
      (require 'auto-complete)
      (require 'auto-complete-config)
      (defun my-ac-config ()
-       (setq-default 
-        ac-sources 
-        '(ac-source-abbrev ac-source-dictionary ac-source-words-in-same-mode-buffers)
-        )
+       (setq-default ac-sources
+		     '(ac-source-abbrev
+		       ac-source-dictionary
+		       ac-source-words-in-same-mode-buffers)
+		     )
        (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
        (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
        (add-hook 'css-mode-hook 'ac-css-mode-setup)
        (add-hook 'auto-complete-mode-hook 'ac-common-setup)
        (ac-flyspell-workaround)
        (global-auto-complete-mode t)
+
+       (setq ac-delay 0.2)
+       (setq ac-quick-help-delay 1)
+       (setq ac-use-menu-map t)
+       (setq ag-highlight-search t)
        )
      (my-ac-config)
    #+end_src
-** Flycheck
+** Real-Time Syntax Checking
+   We use flycheck, which is better than flymake.
    #+begin_src emacs-lisp
      (add-hook 'prog-mode-hook 'flycheck-mode)
+     ;; Set the standard library to libc++ so that C++11 headers will work
+     (setq flycheck-clang-standard-library "libc++")
+     ;; Set the flake8rc location for the flake8 checker
+     (setq flycheck-flake8rc "~/.config/flake8")
+
    #+end_src
-** Mac OSX key bindings
-   Sets the alt, command, and super modifiers to meta
+** Mac OSX Key Bindings
+   We set the alt, command, and super modifiers to meta.
    #+begin_src emacs-lisp
      (setq ns-alternate-modifier 'meta)
      (setq ns-command-modifier 'meta)
      (setq x-super-keysym 'meta)
    #+end_src
-** Backups
-   Stores backups in a temporary folder
+** File Backups
+   We store backups in a temporary folder.
    #+begin_src emacs-lisp
      (setq backup-directory-alist
-           `((".*" . ,temporary-file-directory)))
+	   `((".*" . ,temporary-file-directory)))
      (setq tramp-backup-directory-alist
-           `((".*" . ,temporary-file-directory)))
+	   `((".*" . ,temporary-file-directory)))
      (setq auto-save-file-name-transforms
-           `((".*" ,temporary-file-directory t)))
+	   `((".*" ,temporary-file-directory t)))
    #+end_src
-** File position persistence
-   Saves the cursor position at visited files in between sessions.
+** File Position Persistence
+   We save the cursor position at visited files in between sessions.
    #+begin_src emacs-lisp
      (require 'saveplace)
      (setq-default save-place t)
      (setq save-place-file "~/.emacs.d/.saved-places")
    #+end_src
-** camelCase
-   Navigates camelCase words as separate words
+** camelCase Navigation
+   We want to navigate camelCase words as separate words.
    #+begin_src emacs-lisp
      (global-subword-mode)
    #+end_src
-** s-expression editing
-   Shows matching parentheses and binds a function for deleting
-   matching pairs
+** S-Expression Editing
+   We want to show matching parentheses and have an easy key chord for deleting
+   matching pairs.
    #+begin_src emacs-lisp
      (show-paren-mode)
      (define-key my-keys-minor-mode-map (kbd "M-D") 'delete-pair)
    #+end_src
-** ace-jump
-   Useful for quickly navigating around files
+** Jumping Around Buffers
+   We use ace-jump mode.
    #+begin_src emacs-lisp
+     (require 'ace-jump-mode)
      (define-key my-keys-minor-mode-map (kbd "C-c c") 'ace-jump-char-mode)
    #+end_src
-** Multiple cursors
-   Similar to what you would find in SublimeText
+** Multiple Cursors
+   We use the multiple-cursors package, which provides multiple cursors editing
+   similar to what you would find in SublimeText.
    #+begin_src emacs-lisp
      (require 'multiple-cursors)
      (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
@@ -115,148 +137,206 @@
      (define-key my-keys-minor-mode-map (kbd "C-<") 'mc/mark-previous-like-this)
      (define-key my-keys-minor-mode-map (kbd "C-=") 'mc/mark-all-like-this-dwim)
    #+end_src
-** ido and idomenu
+** Fuzzy File, Buffer, and In-File Symbol Navigation
+   We use IDO, which provides fuzzy completion when navigating the filesystem
+   and the currently open buffers. We replace the default ido fuzzy matcher with
+   flx-ido, which is better. IDOmenu provides an ido-like menu for navigating
+   definitions in a file.
    #+begin_src emacs-lisp
-     (ido-mode 1)
+     (require 'flx-ido)
+     (ido-mode t)
+     (ido-everywhere t)
+     (setq ido-default-buffer-method 'selected-window)
+     (setq ido-enable-flex-matching t)
+     (setq ido-enable-last-directory-history nil)
+     (setq ido-record-commands nil)
+     (setq ido-save-directory-list-file (concat base-dir ".ido.last"))
+     (setq ido-show-dot-for-dired t)
+     ;; Enable ido-flx for matching
+     (flx-ido-mode t)
+     ;; disable ido faces to see flx highlights.
+     (setq ido-use-faces nil)
+
+     ;; Enable idomenu
      (define-key my-keys-minor-mode-map (kbd "M-i") 'idomenu)
    #+end_src
-** smex
+** Fuzzy EMACS Funtion Calls
+   We use smex, which is an M-x enhancement built on top of IDO.
    #+begin_src emacs-lisp
      (smex-initialize)
      (define-key my-keys-minor-mode-map (kbd "M-x") 'smex)
      (define-key my-keys-minor-mode-map (kbd "M-X") 'smex-major-mode-commands)
    #+end_src
-** eval-expression
-   Enables completion in eval-expression minibuffer
+** Completion in an ELISP Minibffer
    #+begin_src emacs-lisp
      (define-key read-expression-map [(tab)] 'lisp-complete-symbol)
    #+end_src
-** flyspell
-   Sets flyspell correction to use two-finger mouse click
+** Spell Checking
+   We use flyspell.
    #+begin_src emacs-lisp
      (require 'flyspell)
+     ;; Sets flyspell correction to use two-finger mouse click
      (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
    #+end_src
-** autopair
-   Autopair automatically closes and wraps regions in specific delimeters
+** Automatic Closing and Wrapping of Delimiters
+   We use autopair.
    #+begin_src emacs-lisp
      (autopair-global-mode)
    #+end_src
-** Color scheme
-   Sets color scheme to solarized-light
+** Color Scheme
+   We use solarized-light.
    #+begin_src emacs-lisp
      (load-theme 'solarized-light)
    #+end_src
-** Browser program
-   Sets the browser program based on which executable exists (for now,
-   we support mac's "open" and gnome's "gnome-open")
+** Opening URLs
+   In order to open URLs in the correct external browser, we set the browser
+   program based on which executable exists (for now, we support mac's "open"
+   and gnome's "gnome-open").
    #+begin_src emacs-lisp
      (setq browse-url-generic-program
-           (cond
-            ((string= system-type "gnu/linux") "gnome-open")
-            (t "open")
-            )
-           )
+	   (cond
+	    ((string= system-type "gnu/linux") "gnome-open")
+	    (t "open")
+	    )
+	   )
+     ;; The function to open a url should use the generic program
+     (setq browse-url-browser-function 'browse-url-generic)
    #+end_src
-** Dired+
+** File Management
+   We configure dired, the emacs file manager.
    #+begin_src emacs-lisp
+     ;; Use dired+, because it has more features
      (require 'dired+)
+     ;; Running dired-omit mode should hide all dotfiles
+     (setq dired-omit-files "^\\..*$")
    #+end_src
-** Window navigation
-   Navigate to different windows and frames. We copy the
-   windmove-default-keybindings and framemove-default-keybindings functions and
-   modify them to use my-keys-minor-mode-map
+** Window and Frame Navigation
+   We define keybindings for navigating to different windows and frames. We copy
+   the windmove-default-keybindings and framemove-default-keybindings functions
+   and modify them to use my-keys-minor-mode-map.
    #+begin_src emacs-lisp
      ;; windmove
      ((lambda ()
-        (setq modifier 'shift)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'left))  'windmove-left)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'right)) 'windmove-right)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'up))    'windmove-up)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'down))  'windmove-down))
+	(setq modifier 'shift)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'left))  'windmove-left)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'right)) 'windmove-right)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'up))    'windmove-up)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'down))  'windmove-down))
       )
      ;; framemove
      ((lambda ()
-        (setq modifier 'meta)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'down))  'fm-down-frame)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'up))    'fm-up-frame)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'left))  'fm-left-frame)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'right)) 'fm-right-frame))
+	(setq modifier 'meta)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'down))  'fm-down-frame)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'up))    'fm-up-frame)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'left))  'fm-left-frame)
+	(define-key my-keys-minor-mode-map (vector (list modifier 'right)) 'fm-right-frame))
       )
 
    #+end_src
-** Encoding
-   Sets everything to UTF-8 encoding
+** UTF-8 Encoding
+   We set everything to UTF-8 encoding.
    #+begin_src emacs-lisp
      (set-terminal-coding-system 'utf-8)
      (set-keyboard-coding-system 'utf-8)
      (set-selection-coding-system 'utf-8)
+     (setq current-language-environment "UTF-8")
      (prefer-coding-system 'utf-8)
    #+end_src
-** Ibuffer
-   Enables ibuffer as the default buffer menu
+** Better buffer menu
+   We make ibuffer the default buffer menu.
    #+begin_src emacs-lisp
      (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
    #+end_src
 ** Terminal settings
-   Keybindings that make terminals in emacs work better
+   We use the multi-term terminal emulator.
    #+begin_src emacs-lisp
-     (when (require 'term nil t) ; only if term can be loaded..
-       (setq term-bind-key-alist
-             (list (cons "C-c C-c" 'term-interrupt-subjob)
-                   (cons "M-f" 'term-send-forward-word)
-                   (cons "M-b" 'term-send-backward-word)
-                   (cons "C-c C-j" 'term-line-mode)
-                   (cons "C-c C-k" 'term-char-mode)
-                   (cons "M-DEL" 'term-send-backward-kill-word)
-                   (cons "M-d" 'term-send-forward-kill-word)
-                   (cons "<C-left>" 'term-send-backward-word)
-                   (cons "<C-right>" 'term-send-forward-word)
-                   (cons "C-r" 'term-send-reverse-search-history)
-                   (cons "M-p" 'term-send-raw-meta)
-                   (cons "M-y" 'term-send-raw-meta)
-                   (cons "C-y" 'term-send-raw))))
+     (require 'multi-term)
    #+end_src
 ** Fill Column
-   The default fill column should be 80 characters
+   We set the fill column to a reasonable default.
    #+begin_src emacs-lisp
      (setq-default fill-column 80)
    #+end_src
+** Blinking Cursor
+   We don't want the cursor to blink.
+   #+begin_src emacs-lisp
+     (blink-cursor-mode -1)
+   #+end_src
+** Column numbers
+   We want to see the column number we're at on each line.
+   #+begin_src emacs-lisp
+     (setq column-number-mode t)
+   #+end_src
+** Line numbers
+   We want line numbers displayed everywhere.
+   #+begin_src emacs-lisp
+     (global-linum-mode)
+   #+end_src
+** Undo/Redo
+   By default, emacs doesn't have an actual redo function. The way you redo an
+   edit is by undoing a previous undo. This can quickly get confusing when
+   you're not exactly sure how much you want to undo or redo, so we use undo
+   tree, which provides an actual redo function for emacs and maintains all edit
+   history by keeping a tree of undos and redos.
+   #+begin_src emacs-lisp
+     (global-undo-tree-mode)
+   #+end_src
+** Turn off All Menus and Tool Bars and Whizbangs
+   We don't need that stuff.
+   #+begin_src emacs-lisp
+     (setq inhibit-startup-screen t)
+     (menu-bar-mode -1)
+     (scroll-bar-mode -1)
+     (tool-bar-mode -1)
+   #+end_src
+** No Tabs
+   We disable indenting with tabs.
+   #+begin_src emacs-lisp
+     (setq indent-tabs-mode nil)
+   #+end_src
+** Navigating sentences
+   We put one space after sentences, so we want emacs to recognize these
+   sentences for navigation and editing.
+   #+begin_src emacs-lisp
+     (setq sentence-end-double-space nil)
+   #+end_src
 * Languages
-  Language-specific settings
+  Here we have language-specific settings.
 ** Python
    #+begin_src emacs-lisp
-     ;; Loads pymacs
+     ;; Loads pymacs, an extension to emacs which allows importing Python modules
+     ;; into emacs and configuring emacs in python
      (load-file (concat downloads-dir "pymacs.el"))
-     ;; Sets up jedi
+     ;; Sets up jedi, a completion and navigation system for emacs
      (add-hook 'python-mode-hook 'jedi:setup)
      (setq jedi:complete-on-dot t)
-     ;; We copied the elpy function to integrate ipython
+     ;; We don't want to use all of ELPY, so here we copied the elpy function to
+     ;; integrate ipython, so that we can run ipython nicely.
      (defun elpy-use-ipython (&optional ipython)
        "Set defaults to use IPython instead of the standard interpreter.
 
      With prefix arg, prompt for the command to use."
        (interactive (list (when current-prefix-arg
-                            (read-file-name "IPython command: "))))
+			    (read-file-name "IPython command: "))))
        (when (not ipython)
-         (setq ipython "ipython"))
+	 (setq ipython "ipython"))
        (if (boundp 'python-python-command)
-           ;; Emacs 24 until 24.3
-           (setq python-python-command ipython)
-         ;; Emacs 24.3 and onwards.
+	   ;; Emacs 24 until 24.3
+	   (setq python-python-command ipython)
+	 ;; Emacs 24.3 and onwards.
 
-         ;; This is from the python.el commentary.
-         ;; Settings for IPython 0.11:
-         (setq python-shell-interpreter ipython
-               python-shell-interpreter-args ""
-               python-shell-prompt-regexp "In \\[[0-9]+\\]: "
-               python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
-               python-shell-completion-setup-code
-               "from IPython.core.completerlib import module_completion"
-               python-shell-completion-module-string-code
-               "';'.join(module_completion('''%s'''))\n"
-               python-shell-completion-string-code
-               "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")))
+	 ;; This is from the python.el commentary.
+	 ;; Settings for IPython 0.11:
+	 (setq python-shell-interpreter ipython
+	       python-shell-interpreter-args ""
+	       python-shell-prompt-regexp "In \\[[0-9]+\\]: "
+	       python-shell-prompt-output-regexp "Out\\[[0-9]+\\]: "
+	       python-shell-completion-setup-code
+	       "from IPython.core.completerlib import module_completion"
+	       python-shell-completion-module-string-code
+	       "';'.join(module_completion('''%s'''))\n"
+	       python-shell-completion-string-code
+	       "';'.join(get_ipython().Completer.all_completions('''%s'''))\n")))
      (elpy-use-ipython)
    #+end_src
 ** Go
@@ -266,8 +346,8 @@
    #+end_src
 ** SQL
    #+begin_src emacs-lisp
-     (eval-after-load "sql"
-       '(load-library "sql-indent"))
+     (require 'sql-indent)
+     (setq sql-mysql-login-params (quote (user server port password)))
    #+end_src
 ** HTML/XML/Javascript
    #+begin_src emacs-lisp
@@ -278,37 +358,40 @@
      (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
      (defadvice web-mode-highlight-part (around tweak-jsx activate)
        (if (equal web-mode-content-type "jsx")
-           (let ((web-mode-enable-part-face nil))
-             ad-do-it)
-         ad-do-it))
+	   (let ((web-mode-enable-part-face nil))
+	     ad-do-it)
+	 ad-do-it))
 
      ;; Web mode seems to have some bug where it immediately starts searching for a
      ;; closing angle bracking after entering a character after an opening angle
      ;; bracket, so you have to insert a closing bracket immediately after the
      ;; closing one, then start typing. Thus we add angle brackets to autopair to do
-     ;; this for us.
+     ;; this for us. Also, since flycheck wants to use html-tidy in web-mode, which
+     ;; doesn't work well with JSX, we turn off flycheck here.
      (add-hook 'web-mode-hook
-               #'(lambda ()
-                   (push '(?< . ?>)
-                         (getf autopair-extra-pairs :code))))
+	       #'(lambda ()
+		   (push '(?< . ?>)
+			 (getf autopair-extra-pairs :code))
+		   (setq flycheck-mode nil)
+		   ))
+     (setq web-mode-code-indent-offset 4)
 
    #+end_src
 ** OCaml
-   Loads packages and sets up environment variables using opam, if it
-   exists
     #+begin_src emacs-lisp
+      ;; Loads packages and sets up environment variables using opam, if it exists
       (if (file-exists-p (expand-file-name "~/.opam"))
-          (progn
-            (dolist (var (car (read-from-string (shell-command-to-string "opam config env --sexp"))))
-              (setenv (car var) (cadr var)))
-            (push (concat (getenv "OCAML_TOPLEVEL_PATH") "/../../share/emacs/site-lisp") load-path)
-            ;; utop
-            (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
-            (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
-            ;; merlin
-            (autoload 'merlin-mode "merlin" "Merlin mode" t)
-            (add-hook 'tuareg-mode-hook 'merlin-mode)
-            ))
+	  (progn
+	    (dolist (var (car (read-from-string (shell-command-to-string "opam config env --sexp"))))
+	      (setenv (car var) (cadr var)))
+	    (push (concat (getenv "OCAML_TOPLEVEL_PATH") "/../../share/emacs/site-lisp") load-path)
+	    ;; utop
+	    (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
+	    (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
+	    ;; merlin
+	    (autoload 'merlin-mode "merlin" "Merlin mode" t)
+	    (add-hook 'tuareg-mode-hook 'merlin-mode)
+	    ))
     #+end_src
 ** CSS
    #+begin_src emacs-lisp
@@ -320,45 +403,70 @@
      (require 'eclim)
      (global-eclim-mode)
      (require 'eclimd)
-     
+
      ;; Display error messages in the echo area
      (setq help-at-pt-display-when-idle t)
      (setq help-at-pt-timer-delay 0.1)
      (help-at-pt-set-timer)
-     
+
      ;; Add eclim to auto complete
      (require 'ac-emacs-eclim-source)
      (ac-emacs-eclim-config)
-   #+end_src emacs-lisp
+   #+end_src
+** LaTeX
+   #+begin_src emacs-lisp
+     ;; This paragraph is copied from the emacs wiki
+     (setq TeX-auto-save t)
+     (setq TeX-parse-self t)
+     (setq-default TeX-master nil)
+     (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+     (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+     (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+     (setq reftex-plug-into-AUCTeX t)
+
+     ;; We want to compile to PDFs by default
+     (setq TeX-PDF-mode t)
+   #+end_src
+** Haskell
+   #+begin_src emacs-lisp
+     (require 'haskell-mode)
+     ;; Turn on haskell-mode features automatically
+     (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+     (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+     (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
+     (add-hook 'haskell-mode-hook 'haskell-doc-mode)
+   #+end_src
 * Projects
-  Project-specific settings
+  Here we have project-specific settings.
 ** Tachyon
+   Tachyon is the UC Berkeley AMPLab project I'm working on.
    #+begin_src emacs-lisp
      ;; Sets Tachyon settings for java files in the tachyon directory
      (defconst tachyon-dir (expand-file-name "~/programming/tachyon"))
      (add-hook 'java-mode-hook
-               (lambda ()
-                 "Sets tachyon as the java style if in the tachyon directory"
-                 (if (and (stringp buffer-file-name)
-                          (string-prefix-p tachyon-dir buffer-file-name))
-                     (set-fill-column 100))))
-                                 
+	       (lambda ()
+		 "Sets tachyon as the java style if in the tachyon directory"
+		 (if (and (stringp buffer-file-name)
+			  (string-prefix-p tachyon-dir buffer-file-name))
+		     (set-fill-column 100))))
+
    #+end_src
 ** Google
-   Sets up the google work environment. You must run prodaccess before
-   this will work.
+   We set up up the Google work environment. You must run prodaccess before this
+   will work.
    #+begin_src emacs-lisp
      (if (file-exists-p "/google/src/files/head/depot/eng/elisp/google.el")
-         (progn
-           ;; Load the emacs package
-           (load-file "/google/src/files/head/depot/eng/elisp/google.el")
-           (setq p4-use-p4config-exclusively t)
-           ;; Set up blaze inside emacs
-           (require 'google3-build)
-           (setq google-build-system "blaze")
-           ;; Initilaize grok, which allows you to browse code inside emacs
-           (grok-init)
-           ;; csearch
-           (require 'csearch)
-           ))
+	 (progn
+	   ;; Load the emacs package
+	   (load-file "/google/src/files/head/depot/eng/elisp/google.el")
+	   (setq p4-use-p4config-exclusively t)
+	   ;; Set up blaze inside emacs
+	   (require 'google3-build)
+	   (setq google-build-system "blaze")
+	   ;; Initilaize grok, which allows you to browse code inside emacs
+	   (grok-init)
+	   ;; csearch
+	   (require 'csearch)
+	   ))
    #+end_src

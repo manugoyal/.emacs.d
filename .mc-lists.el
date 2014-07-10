@@ -24,6 +24,8 @@
         indent-for-tab-command
         kill-region
         kill-sexp
+        mark-sexp
+        next-error
         nxml-electric-slash
         org-delete-char
         org-kill-line

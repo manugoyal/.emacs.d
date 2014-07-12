@@ -409,9 +409,14 @@
      (setq help-at-pt-timer-delay 0.1)
      (help-at-pt-set-timer)
 
-     ;; Add eclim to auto complete
-     (require 'ac-emacs-eclim-source)
-     (ac-emacs-eclim-config)
+     ;; Add eclim to auto complete, if there's an executable
+     (if eclim-executable
+         (progn
+           (require 'ac-emacs-eclim-source)
+           (ac-emacs-eclim-config)
+           )
+       )
+
    #+end_src
 ** LaTeX
    #+begin_src emacs-lisp

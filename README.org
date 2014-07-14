@@ -184,9 +184,9 @@
      (autopair-global-mode)
    #+end_src
 ** Color Scheme
-   We use solarized-light.
+   We use monokai.
    #+begin_src emacs-lisp
-     (load-theme 'solarized-light)
+     (load-theme 'monokai)
    #+end_src
 ** Opening URLs
    In order to open URLs in the correct external browser, we set the browser
@@ -300,8 +300,29 @@
    #+begin_src emacs-lisp
      (setq sentence-end-double-space nil)
    #+end_src
+** Font
+   We use a variable-width font if we're not in a programming mode.
+   #+begin_src emacs-lisp
+     ;; We enable variable-pitch-mode globally, then turn it off in prog mode
+     (defvar variable-pitch-mode t
+       "A variable that exists so that the variable variable-pitch-mode is defined")
+     (define-globalized-minor-mode global-variable-pitch-mode variable-pitch-mode
+       variable-pitch-mode)
+     
+     (defun variable-pitch-off ()
+       (variable-pitch-mode -1))
+     
+     (global-variable-pitch-mode 1)
+     (add-hook 'prog-mode-hook 'variable-pitch-off)
+   #+end_src
 * Languages
   Here we have language-specific settings.
+** Polymode
+   Polymode lets you mix major modes in a single buffer. We load polymode here
+   and define custom ones later.
+   #+begin_src emacs-lisp
+     (require 'polymode)
+   #+end_src
 ** Python
    #+begin_src emacs-lisp
      ;; Loads pymacs, an extension to emacs which allows importing Python modules
@@ -358,10 +379,10 @@
      (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
      (defadvice web-mode-highlight-part (around tweak-jsx activate)
        (if (equal web-mode-content-type "jsx")
-	   (let ((web-mode-enable-part-face nil))
-	     ad-do-it)
-	 ad-do-it))
-
+           (let ((web-mode-enable-part-face nil))
+             ad-do-it)
+         ad-do-it))
+     
      ;; Web mode seems to have some bug where it immediately starts searching for a
      ;; closing angle bracking after entering a character after an opening angle
      ;; bracket, so you have to insert a closing bracket immediately after the
@@ -369,13 +390,12 @@
      ;; this for us. Also, since flycheck wants to use html-tidy in web-mode, which
      ;; doesn't work well with JSX, we turn off flycheck here.
      (add-hook 'web-mode-hook
-	       #'(lambda ()
-		   (push '(?< . ?>)
-			 (getf autopair-extra-pairs :code))
-		   (setq flycheck-mode nil)
-		   ))
+               #'(lambda ()
+                   (push '(?< . ?>)
+                         (getf autopair-extra-pairs :code))
+                   (setq flycheck-mode nil)
+                   ))
      (setq web-mode-code-indent-offset 4)
-
    #+end_src
 ** OCaml
     #+begin_src emacs-lisp

@@ -175,6 +175,8 @@
    We use flyspell.
    #+begin_src emacs-lisp
      (require 'flyspell)
+     (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+     (add-hook 'text-mode-hook 'flyspell-mode)
      ;; Sets flyspell correction to use two-finger mouse click
      (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
    #+end_src
@@ -301,19 +303,9 @@
      (setq sentence-end-double-space nil)
    #+end_src
 ** Font
-   We use a variable-width font if we're not in a programming mode.
+   We use a variable-width font if we're in buffers with human language.
    #+begin_src emacs-lisp
-     ;; We enable variable-pitch-mode globally, then turn it off in prog mode
-     (defvar variable-pitch-mode t
-       "A variable that exists so that the variable variable-pitch-mode is defined")
-     (define-globalized-minor-mode global-variable-pitch-mode variable-pitch-mode
-       variable-pitch-mode)
-     
-     (defun variable-pitch-off ()
-       (variable-pitch-mode -1))
-     
-     (global-variable-pitch-mode 1)
-     (add-hook 'prog-mode-hook 'variable-pitch-off)
+     (add-hook 'text-mode-hook 'variable-pitch-mode)
    #+end_src
 * Languages
   Here we have language-specific settings.

@@ -317,12 +317,6 @@
    #+end_src
 * Languages
   Here we have language-specific settings.
-** Polymode
-   Polymode lets you mix major modes in a single buffer. We load polymode here
-   and define custom ones later.
-   #+begin_src emacs-lisp
-     (require 'polymode)
-   #+end_src
 ** Python
    #+begin_src emacs-lisp
      ;; Loads pymacs, an extension to emacs which allows importing Python modules

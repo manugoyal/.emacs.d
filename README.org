@@ -293,7 +293,7 @@
 ** No Tabs
    We disable indenting with tabs.
    #+begin_src emacs-lisp
-     (setq indent-tabs-mode nil)
+     (setq-default indent-tabs-mode nil)
    #+end_src
 ** Navigating sentences
    We put one space after sentences, so we want emacs to recognize these
@@ -364,6 +364,9 @@
    #+end_src
 ** HTML/XML/Javascript
    #+begin_src emacs-lisp
+     ;; Make js2 the default javascript mode
+     (require 'js2-mode)
+     (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
    #+end_src
 ** OCaml
     #+begin_src emacs-lisp

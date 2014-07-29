@@ -24,8 +24,9 @@
 ;; We keep a list of installed packages here. We go through this list, and for
 ;; any package that isn't installed, we install it. To obtain this list on a
 ;; full installation, get the value of the 'package-activated-list variable.
+
 (defconst installed-packages
-  '(auctex ace-jump-mode ag async autopair company dired+ dired-sort-menu emacs-eclim exec-path-from-shell f find-file-in-project flx-ido flx flycheck framemove fuzzy go-autocomplete go-mode haskell-mode highlight-indentation idomenu iedit jedi auto-complete epc ctable concurrent js2-mode less-css-mode leuven-theme magit-push-remote magit-tramp magit git-rebase-mode git-commit-mode markdown-mode monokai-theme multi-term multiple-cursors org pkg-info epl popup python-environment deferred pyvenv request s scss-mode smex sml-mode solarized-theme sql-indent tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag wgrep wrap-region dash yasnippet zenburn-theme)
+  '(ido-ubiquitous ido-vertical-mode ace-jump-mode ag async auctex autopair company dired+ dired-sort-menu emacs-eclim exec-path-from-shell f find-file-in-project flx-ido flx flycheck framemove fuzzy go-autocomplete go-mode haskell-mode highlight-indentation idomenu iedit jedi auto-complete epc ctable concurrent js2-mode less-css-mode magit-push-remote magit-tramp magit git-rebase-mode git-commit-mode markdown-mode multi-term multiple-cursors org pkg-info epl popup python-environment deferred pyvenv request s scss-mode smex sml-mode sql-indent tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag wgrep wrap-region dash yasnippet zenburn-theme)
   "A list of packages that should be installed at start-up."
   )
 (dolist (package installed-packages)

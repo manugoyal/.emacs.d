@@ -149,8 +149,12 @@
    definitions in a file.
    #+begin_src emacs-lisp
      (require 'flx-ido)
+     (require 'ido-vertical-mode)
+     (require 'ido-ubiquitous)
      (ido-mode t)
      (ido-everywhere t)
+     (ido-ubiquitous-mode t)
+     (ido-vertical-mode t)
      (setq ido-default-buffer-method 'selected-window)
      (setq ido-enable-flex-matching t)
      (setq ido-enable-last-directory-history nil)

@@ -324,6 +324,13 @@
      (yas-reload-all)
      (add-hook 'prog-mode-hook 'yas-minor-mode-on)
    #+end_src
+** Whitespace mode
+   Turn on whitespace mode when programming. Additional settings for whitespace
+   mode can be found in custom.el.
+   #+begin_src emacs-lisp
+     (require 'whitespace)
+     (add-hook 'prog-mode-hook 'whitespace-mode)
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

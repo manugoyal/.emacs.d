@@ -20,6 +20,7 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
+(package-refresh-contents)
 
 ;; We keep a list of installed packages here. We go through this list, and for
 ;; any package that isn't installed, we install it. To obtain this list on a

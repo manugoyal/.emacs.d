@@ -1,12 +1,8 @@
 ;;; init.el --- Where all the magic begins
 ;;
 ;;; Commentary:
-;; This file loads both
-;; - Org-mode : http://orgmode.org/ and
-;; - Org-babel: http://orgmode.org/worg/org-contrib/babel/org-babel.php#library-of-babel
-;;
-;; It then loads the rest of our Emacs initialization from Emacs Lisp
-;; embedded in literate Org-mode files.
+;; This file loads both org-mode and org-babel. It then loads the rest of our
+;; Emacs initialization from Emacs Lisp embedded in literate Org-mode files.
 ;;
 ;;; Code:
 
@@ -25,7 +21,6 @@
 ;; We keep a list of installed packages here. We go through this list, and for
 ;; any package that isn't installed, we install it. To obtain this list on a
 ;; full installation, get the value of the 'package-activated-list variable.
-
 (defconst installed-packages
   '(ido-ubiquitous ido-vertical-mode ace-jump-mode ag async auctex autopair company dired+ dired-sort-menu emacs-eclim exec-path-from-shell f find-file-in-project flx-ido flx flycheck framemove fuzzy go-autocomplete go-mode haskell-mode highlight-indentation idomenu iedit jedi auto-complete epc ctable concurrent js2-mode less-css-mode magit-push-remote magit-tramp magit git-rebase-mode git-commit-mode markdown-mode multi-term multiple-cursors org pkg-info epl popup python-environment deferred pyvenv request s scss-mode smex sml-mode sql-indent tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag wgrep wrap-region dash yasnippet zenburn-theme)
   "A list of packages that should be installed at start-up."
@@ -36,6 +31,9 @@
         (message "Installing package: %s" package)
         (package-install package)))
   )
+;; Byte recompile everything in the elpa and downloads directories
+(byte-recompile-directory (concat base-dir "elpa"))
+(byte-recompile-directory (concat base-dir "downloads"))
 
 ;; Loads custom.el. The custom.el file should only contain settings that are
 ;; long lists of things or contain data too long or unwieldy to type out

@@ -331,6 +331,15 @@
      (require 'whitespace)
      (add-hook 'prog-mode-hook 'whitespace-mode)
    #+end_src
+** Recentf mode
+   Enable recentf-mode, which allows you to access your most recently-opened
+   files
+   #+begin_src emacs-lisp
+     (require 'recentf)
+     (recentf-mode 1)
+     (setq recentf-max-menu-items 25)
+     (define-key my-keys-minor-mode-map (kbd "C-x C-r") 'recentf-open-files)
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

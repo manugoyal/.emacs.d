@@ -14,7 +14,9 @@
 ;; Sets up package
 (require 'package)
 (add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
+             '("elpy" . "http://jorgenschaefer.github.io/packages/")
+             '("melpa" . "http://melpa.milkbox.net/packages/")
+             )
 (package-initialize)
 (package-refresh-contents)
 

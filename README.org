@@ -227,21 +227,29 @@
    #+begin_src emacs-lisp
      ;; windmove
      ((lambda ()
-	(setq modifier 'shift)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'left))  'windmove-left)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'right)) 'windmove-right)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'up))    'windmove-up)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'down))  'windmove-down))
+        (setq modifier 'shift)
+        (define-key my-keys-minor-mode-map (vector (list modifier 'left))
+          'windmove-left)
+        (define-key my-keys-minor-mode-map (vector (list modifier 'right))
+          'windmove-right)
+        (define-key my-keys-minor-mode-map (vector (list modifier 'up))
+          'windmove-up)
+        (define-key my-keys-minor-mode-map (vector (list modifier 'down))
+          'windmove-down))
       )
      ;; framemove
      ((lambda ()
-	(setq modifier 'meta)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'down))  'fm-down-frame)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'up))    'fm-up-frame)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'left))  'fm-left-frame)
-	(define-key my-keys-minor-mode-map (vector (list modifier 'right)) 'fm-right-frame))
-      )
-
+        (setq modifiers '(control shift))
+        (define-key my-keys-minor-mode-map (vector (append modifiers '(down)))
+          'fm-down-frame)
+        (define-key my-keys-minor-mode-map (vector (append modifiers '(up)))
+          'fm-up-frame)
+        (define-key my-keys-minor-mode-map (vector (append modifiers '(left)))
+          'fm-left-frame)
+        (define-key my-keys-minor-mode-map (vector (append modifiers '(right)))
+          'fm-right-frame)
+        ))
+     
    #+end_src
 ** UTF-8 Encoding
    We set everything to UTF-8 encoding.
@@ -347,7 +355,6 @@
      ;; Loads elpy
      (elpy-enable)
      (elpy-use-ipython)
-     
    #+end_src
 ** Go
    #+begin_src emacs-lisp

@@ -20,10 +20,18 @@
    We use the exec-path-from-shell package to grab environment variable
    definitions from the shell environment.
    #+begin_src emacs-lisp
-     (defvar exec-path-from-shell-variables
-       '("PATH" "MANPATH" "GOPATH" "CXX" "LD_LIBRARY_PATH" "PYTHONPATH"
-	 "hlalib" "hlainc" "PATH_TO_MEMSQL" "GOROOT"))
-     (exec-path-from-shell-initialize)
+     (require 'cl)
+     (require 's)
+     (let (
+           (env (shell-command-to-string "printenv"))
+           (getvarname (lambda (line)
+                         (let ((ind (s-index-of "=" line)))
+                           (if ind (s-left ind line) line))))
+           )
+       (exec-path-from-shell-copy-envs
+        (map 'list getvarname (s-lines env)))
+       )
+
    #+end_src
 ** CEDET
    We configure CEDET, a suite of semantic analysis and development tools for

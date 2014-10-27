@@ -18,7 +18,6 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
-(package-refresh-contents)
 
 ;; We keep a list of installed packages here. We go through this list, and for
 ;; any package that isn't installed, we install it. To obtain this list on a
@@ -33,9 +32,6 @@
         (message "Installing package: %s" package)
         (package-install package)))
   )
-;; Byte recompile everything in the elpa and downloads directories
-(byte-recompile-directory (concat base-dir "elpa"))
-(byte-recompile-directory (concat base-dir "downloads"))
 
 ;; Loads custom.el. The custom.el file should only contain settings that are
 ;; long lists of things or contain data too long or unwieldy to type out

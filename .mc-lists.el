@@ -34,8 +34,10 @@
         org-kill-line
         paredit-backward
         paredit-backward-kill-word
+        paredit-doublequote
         paredit-forward
         paredit-forward-delete
+        paredit-forward-kill-word
         paredit-kill
         paredit-open-round
         query-replace

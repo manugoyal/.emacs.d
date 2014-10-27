@@ -189,11 +189,6 @@
      ;; Sets flyspell correction to use two-finger mouse click
      (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
    #+end_src
-** Automatic Closing and Wrapping of Delimiters
-   We use autopair.
-   #+begin_src emacs-lisp
-     (autopair-global-mode)
-   #+end_src
 ** Color Scheme
    #+begin_src emacs-lisp
      (load-theme 'zenburn)
@@ -325,13 +320,6 @@
    #+begin_src emacs-lisp
      (setq-default case-fold-search t)
    #+end_src
-** YASnippet
-   Turn on YASnippet
-   #+begin_src emacs-lisp
-     (require 'yasnippet)
-     (yas-reload-all)
-     (add-hook 'prog-mode-hook 'yas-minor-mode-on)
-   #+end_src
 ** Whitespace mode
    Turn on whitespace mode when programming. Additional settings for whitespace
    mode can be found in custom.el.
@@ -347,6 +335,11 @@
      (recentf-mode 1)
      (setq recentf-max-menu-items 25)
      (define-key my-keys-minor-mode-map (kbd "C-x C-r") 'recentf-open-files)
+   #+end_src
+** Paredit mode
+   Add paredit to the programming modes
+   #+begin_src emacs-lisp
+     (add-hook 'prog-mode-hook 'paredit-mode)
    #+end_src
 * Languages
   Here we have language-specific settings.

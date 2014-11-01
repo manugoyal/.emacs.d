@@ -186,7 +186,7 @@
    #+end_src
 ** Completion in an ELISP Minibffer
    #+begin_src emacs-lisp
-     (define-key read-expression-map [(tab)] 'lisp-complete-symbol)
+     (define-key read-expression-map [(tab)] 'completion-at-point)
    #+end_src
 ** Spell Checking
    We use flyspell.

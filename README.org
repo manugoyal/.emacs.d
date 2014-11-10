@@ -17,21 +17,10 @@
      (my-keys-minor-mode 1)
    #+end_src
 ** Shell Environment variables
-   We use the exec-path-from-shell package to grab environment variable
+   We use the exec-path-from-shell package to grab some environment variable
    definitions from the shell environment.
    #+begin_src emacs-lisp
-     (require 'cl)
-     (require 's)
-     (let (
-           (env (shell-command-to-string "printenv"))
-           (getvarname (lambda (line)
-                         (let ((ind (s-index-of "=" line)))
-                           (if ind (s-left ind line) line))))
-           )
-       (exec-path-from-shell-copy-envs
-        (map 'list getvarname (s-lines env)))
-       )
-
+     (exec-path-from-shell-initialize)
    #+end_src
 ** CEDET
    We configure CEDET, a suite of semantic analysis and development tools for
@@ -344,10 +333,10 @@
      (setq recentf-max-menu-items 25)
      (define-key my-keys-minor-mode-map (kbd "C-x C-r") 'recentf-open-files)
    #+end_src
-** Paredit mode
-   Add paredit to the programming modes
+** Autopair mode
+   Enable autopair mode globally
    #+begin_src emacs-lisp
-     (add-hook 'prog-mode-hook 'paredit-mode)
+     (autopair-global-mode)
    #+end_src
 * Languages
   Here we have language-specific settings.
@@ -375,19 +364,20 @@
    #+end_src
 ** OCaml
     #+begin_src emacs-lisp
-      ;; Loads packages and sets up environment variables using opam, if it exists
       (if (file-exists-p (expand-file-name "~/.opam"))
-	  (progn
-	    (dolist (var (car (read-from-string (shell-command-to-string "opam config env --sexp"))))
-	      (setenv (car var) (cadr var)))
-	    (push (concat (getenv "OCAML_TOPLEVEL_PATH") "/../../share/emacs/site-lisp") load-path)
-	    ;; utop
-	    (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
-	    (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
-	    ;; merlin
-	    (autoload 'merlin-mode "merlin" "Merlin mode" t)
-	    (add-hook 'tuareg-mode-hook 'merlin-mode)
-	    ))
+          (progn
+            ;; Get the necessary environment variable definitions
+            (exec-path-from-shell-copy-env "OCAML_TOPLEVEL_PATH")
+            ;; Add the .opam site-lisp directory to the load path
+            (push (concat
+                   (getenv "OCAML_TOPLEVEL_PATH")
+                   "/../../share/emacs/site-lisp")
+                  load-path)
+            ;; utop
+            (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
+            (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
+            (setq utop-command "opam config exec \"utop -emacs\"")
+            ))
     #+end_src
 ** CSS
    #+begin_src emacs-lisp

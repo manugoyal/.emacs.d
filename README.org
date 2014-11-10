@@ -20,7 +20,9 @@
    We use the exec-path-from-shell package to grab some environment variable
    definitions from the shell environment.
    #+begin_src emacs-lisp
-     (exec-path-from-shell-initialize)
+     (if (not (eq system-type 'windows-nt))
+         (exec-path-from-shell-initialize)
+       )
    #+end_src
 ** CEDET
    We configure CEDET, a suite of semantic analysis and development tools for
@@ -337,6 +339,10 @@
    Enable autopair mode globally
    #+begin_src emacs-lisp
      (autopair-global-mode)
+   #+end_src
+** Disable audible ding
+   #+begin_src emacs-lisp
+     (setq visible-bell t)
    #+end_src
 * Languages
   Here we have language-specific settings.

@@ -18,12 +18,13 @@
 (add-to-list 'package-archives
              '("melpa" . "http://melpa.milkbox.net/packages/") t)
 (package-initialize)
+(package-refresh-contents)
 
 ;; We keep a list of installed packages here. We go through this list, and for
 ;; any package that isn't installed, we install it. To obtain this list on a
 ;; full installation, get the value of the 'package-activated-list variable.
 (defconst installed-packages
-  '(ido-ubiquitous ido-vertical-mode ace-jump-mode ag async auctex autopair company dired+ dired-sort-menu emacs-eclim exec-path-from-shell f find-file-in-project flx-ido flx flycheck framemove fuzzy go-autocomplete go-mode haskell-mode highlight-indentation idomenu iedit jedi auto-complete epc ctable concurrent js2-mode less-css-mode magit-push-remote magit-tramp magit git-rebase-mode git-commit-mode markdown-mode multi-term multiple-cursors org pkg-info epl popup python-environment deferred pyvenv request s scss-mode smex sml-mode sql-indent tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag wgrep wrap-region dash yasnippet zenburn-theme)
+  '(ace-jump-mode ag async auctex autopair base16-theme cider queue pkg-info epl dash clojure-mode clojure-mode dired+ dired-sort-menu elpy yasnippet pyvenv idomenu highlight-indentation find-file-in-project company emacs-eclim s exec-path-from-shell f dash s find-file-in-project flx-ido flx flycheck pkg-info epl dash framemove fuzzy go-autocomplete auto-complete popup go-mode haskell-mode highlight-indentation ido-ubiquitous ido-vertical-mode idomenu iedit jedi python-environment deferred auto-complete popup epc ctable concurrent deferred js2-mode less-css-mode leuven-theme magit-push-remote magit git-rebase-mode git-commit-mode magit-tramp magit git-rebase-mode git-commit-mode markdown-mode monokai-theme multi-term multi-web-mode multiple-cursors paredit pkg-info epl polymode popup python-environment deferred pyvenv queue rainbow-mode request s scss-mode smex sml-mode solarized-theme dash sql-indent tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag wgrep wrap-region dash yasnippet zenburn-theme)
   "A list of packages that should be installed at start-up."
   )
 (dolist (package installed-packages)

@@ -11,28 +11,38 @@
 (defconst downloads-dir (concat base-dir "downloads/"))
 (defconst configuration-file (concat base-dir "README.org"))
 
-;; Sets up package
-(require 'package)
-(add-to-list 'package-archives
-             '("elpy" . "http://jorgenschaefer.github.io/packages/") t)
-(add-to-list 'package-archives
-             '("melpa" . "http://melpa.milkbox.net/packages/") t)
-(package-initialize)
-(package-refresh-contents)
+;; Loads the cl library, since that's important and should come before
+;; everything else
+(require 'cl)
 
 ;; We keep a list of installed packages here. We go through this list, and for
 ;; any package that isn't installed, we install it. To obtain this list on a
 ;; full installation, get the value of the 'package-activated-list variable.
 (defconst installed-packages
-  '(ace-jump-mode ag async auctex autopair base16-theme cider queue pkg-info epl dash clojure-mode clojure-mode dired+ dired-sort-menu elpy yasnippet pyvenv idomenu highlight-indentation find-file-in-project company emacs-eclim s exec-path-from-shell f dash s find-file-in-project flx-ido flx flycheck pkg-info epl dash framemove fuzzy go-autocomplete auto-complete popup go-mode haskell-mode highlight-indentation ido-ubiquitous ido-vertical-mode idomenu iedit jedi python-environment deferred auto-complete popup epc ctable concurrent deferred js2-mode less-css-mode leuven-theme magit-push-remote magit git-rebase-mode git-commit-mode magit-tramp magit git-rebase-mode git-commit-mode markdown-mode monokai-theme multi-term multi-web-mode multiple-cursors paredit pkg-info epl polymode popup python-environment deferred pyvenv queue rainbow-mode request s scss-mode smex sml-mode solarized-theme dash sql-indent tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag wgrep wrap-region dash yasnippet zenburn-theme)
-  "A list of packages that should be installed at start-up."
+  '(ace-jump-mode ag s dash auctex autopair cider queue pkg-info
+  epl clojure-mode dired+ dired-sort-menu elpy yasnippet pyvenv
+  idomenu highlight-indentation find-file-in-project company
+  exec-path-from-shell f flx-ido flx flycheck framemove fuzzy
+  go-autocomplete auto-complete popup go-mode haskell-mode helm
+  async iedit jedi python-environment deferred epc ctable
+  concurrent js2-mode less-css-mode magit-push-remote magit
+  git-rebase-mode git-commit-mode magit-tramp markdown-mode
+  multi-term multi-web-mode multiple-cursors paredit rainbow-mode
+  request scss-mode smex sml-mode solarized-theme sql-indent
+  tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag
+  wgrep wrap-region zenburn-theme)
   )
+
+;; Sets up package
+(require 'package)
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")
+        ("elpy" . "http://jorgenschaefer.github.io/packages/")))
+(package-initialize)
+(unless package-archive-contents (package-refresh-contents))
 (dolist (package installed-packages)
-  (if (not (package-installed-p package))
-      (progn
-        (message "Installing package: %s" package)
-        (package-install package)))
-  )
+  (unless (package-installed-p package) (package-install package)))
 
 ;; Loads custom.el. The custom.el file should only contain settings that are
 ;; long lists of things or contain data too long or unwieldy to type out

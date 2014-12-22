@@ -24,6 +24,7 @@
         forward-sexp
         go-mode-insert-and-indent
         haskell-indentation-delete-backward-char
+        haskell-indentation-delete-char
         indent-for-tab-command
         kill-region
         kill-sexp

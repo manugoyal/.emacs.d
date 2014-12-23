@@ -19,26 +19,24 @@
 ;; any package that isn't installed, we install it. To obtain this list on a
 ;; full installation, get the value of the 'package-activated-list variable.
 (defconst installed-packages
-  '(ace-jump-mode ag s dash auctex autopair cider queue pkg-info
-  epl clojure-mode dired+ dired-sort-menu elpy yasnippet pyvenv
-  idomenu highlight-indentation find-file-in-project company
-  exec-path-from-shell f flx-ido flx flycheck framemove fuzzy
-  go-autocomplete auto-complete popup go-mode haskell-mode helm
-  async iedit jedi python-environment deferred epc ctable
-  concurrent js2-mode less-css-mode magit-push-remote magit
-  git-rebase-mode git-commit-mode magit-tramp markdown-mode
-  multi-term multi-web-mode multiple-cursors paredit rainbow-mode
-  request scss-mode smex sml-mode solarized-theme sql-indent
-  tuareg caml undo-tree virtualenv web-mode websocket wgrep-ag
-  wgrep wrap-region zenburn-theme)
+  '(wrap-region dash ace-jump-mode ag s auctex cider queue pkg-info epl
+                clojure-mode company-anaconda anaconda-mode f json-rpc company
+                company-c-headers company-go dired+ dired-sort-menu epc ctable
+                concurrent deferred exec-path-from-shell find-file-in-project
+                flycheck framemove fuzzy go-mode haskell-mode helm async
+                highlight-indentation iedit js2-mode less-css-mode
+                magit-push-remote magit git-rebase-mode git-commit-mode
+                magit-tramp markdown-mode multiple-cursors paredit popup
+                python-environment pyvenv rainbow-mode request scss-mode
+                sml-mode sql-indent tuareg caml undo-tree web-mode websocket
+                wgrep-ag wgrep yasnippet zenburn-theme)
   )
 
 ;; Sets up package
 (require 'package)
 (setq package-archives
       '(("gnu" . "http://elpa.gnu.org/packages/")
-        ("melpa" . "http://melpa.milkbox.net/packages/")
-        ("elpy" . "http://jorgenschaefer.github.io/packages/")))
+        ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 (unless package-archive-contents (package-refresh-contents))
 (dolist (package installed-packages)

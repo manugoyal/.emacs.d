@@ -351,9 +351,7 @@
      (setq reftex-plug-into-AUCTeX t)
      ;; We want to compile to PDFs by default
      (setq TeX-PDF-mode t)
-     ;; Company completion for AucTeX
-     (require 'company-auctex)
-     (company-auctex-init)
+
    #+end_src
 ** Haskell
    #+begin_src emacs-lisp

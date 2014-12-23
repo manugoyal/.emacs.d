@@ -28,14 +28,11 @@
    We configure CEDET, a suite of semantic analysis and development tools for
    emacs.
    #+begin_src emacs-lisp
+     ;; Activate semantic and ede
      (require 'semantic)
      (require 'semantic/ia)
-     ;; Activate semantic and ede
      (semantic-mode t)
      (global-ede-mode t)
-     ;; Add keybinding for semantic-ia-fast-jump, since that seems to be the most
-     ;; accurate code navigation function
-     (define-key semantic-mode-map (kbd "C-c , j") 'semantic-ia-fast-jump)
    #+end_src
 ** TRAMP
    We configure TRAMP, a package that provides transparent remote file access
@@ -271,11 +268,6 @@
    #+begin_src emacs-lisp
      (require 'recentf)
      (recentf-mode 1)
-   #+end_src
-** Autopair mode
-   Enable autopair mode globally
-   #+begin_src emacs-lisp
-     (autopair-global-mode)
    #+end_src
 ** Helm
    Set up Helm

@@ -29,11 +29,7 @@
    emacs.
    #+begin_src emacs-lisp
      (require 'semantic)
-     (require 'ede/cpp-root)
-     ;; Creates the directory "~/.emacs.semanticdb" to store the tags
-     (when (not (file-exists-p "~/.emacs.semanticdb"))
-       (make-directory "~/.emacs.semanticdb"))
-     (setq semanticdb-default-save-directory "~/.emacs.semanticdb")
+     (require 'semantic/ia)
      ;; Activate semantic and ede
      (semantic-mode t)
      (global-ede-mode t)
@@ -48,46 +44,28 @@
      ;; Tramp saves backups to the local directory, for speed.
      (setq tramp-auto-save-directory "\"/tmp\"")
    #+end_src
-** General Symbol Completion
-   We use the auto-complete package. In addition to generic auto-completion, it
-   has settings for specific languages as well.
+** Company mode
+   A nice auto-completion framework.
    #+begin_src emacs-lisp
-     (require 'auto-complete)
-     (require 'auto-complete-config)
-     (defun my-ac-config ()
-       (setq-default ac-sources
-		     '(ac-source-abbrev
-		       ac-source-dictionary
-		       ac-source-words-in-same-mode-buffers)
-		     )
-       (add-hook 'emacs-lisp-mode-hook 'ac-emacs-lisp-mode-setup)
-       (add-hook 'ruby-mode-hook 'ac-ruby-mode-setup)
-       (add-hook 'css-mode-hook 'ac-css-mode-setup)
-       (add-hook 'auto-complete-mode-hook 'ac-common-setup)
-       (ac-flyspell-workaround)
-       (global-auto-complete-mode t)
-
-       (setq ac-delay 0.2)
-       (setq ac-quick-help-delay 1)
-       (setq ac-use-menu-map t)
-       )
-     (my-ac-config)
+     (require 'company)
+     (global-company-mode)
    #+end_src
 ** Ag
    We use the search tool Ag to search through large codebases, because it's
    significantly faster and smarter than grep or ack.
    #+begin_src emacs-lisp
+     (require 'ag)
      (setq ag-highlight-search t)
    #+end_src
 ** Real-Time Syntax Checking
    We use flycheck, which is better than flymake.
    #+begin_src emacs-lisp
+     (require 'flycheck)
      (add-hook 'prog-mode-hook 'flycheck-mode)
      ;; Set the standard library to libc++ so that C++11 headers will work
      (setq flycheck-clang-standard-library "libc++")
      ;; Set the flake8rc location for the flake8 checker
      (setq flycheck-flake8rc "~/.config/flake8")
-
    #+end_src
 ** Mac OSX Key Bindings
    We set the alt, command, and super modifiers to meta.
@@ -100,11 +78,11 @@
    We store backups in a temporary folder.
    #+begin_src emacs-lisp
      (setq backup-directory-alist
-	   `((".*" . ,temporary-file-directory)))
+           `((".*" . ,temporary-file-directory)))
      (setq tramp-backup-directory-alist
-	   `((".*" . ,temporary-file-directory)))
+           `((".*" . ,temporary-file-directory)))
      (setq auto-save-file-name-transforms
-	   `((".*" ,temporary-file-directory t)))
+           `((".*" ,temporary-file-directory t)))
    #+end_src
 ** File Position Persistence
    We save the cursor position at visited files in between sessions.
@@ -141,40 +119,6 @@
      (define-key my-keys-minor-mode-map (kbd "C-<") 'mc/mark-previous-like-this)
      (define-key my-keys-minor-mode-map (kbd "C-=") 'mc/mark-all-like-this-dwim)
    #+end_src
-** Fuzzy File, Buffer, and In-File Symbol Navigation
-   We use IDO, which provides fuzzy completion when navigating the filesystem
-   and the currently open buffers. We replace the default ido fuzzy matcher with
-   flx-ido, which is better. IDOmenu provides an ido-like menu for navigating
-   definitions in a file.
-   #+begin_src emacs-lisp
-     (require 'flx-ido)
-     (require 'ido-vertical-mode)
-     (require 'ido-ubiquitous)
-     (ido-mode t)
-     (ido-everywhere t)
-     (ido-ubiquitous-mode t)
-     (ido-vertical-mode t)
-     (setq ido-default-buffer-method 'selected-window)
-     (setq ido-enable-flex-matching t)
-     (setq ido-enable-last-directory-history nil)
-     (setq ido-record-commands nil)
-     (setq ido-save-directory-list-file (concat base-dir ".ido.last"))
-     (setq ido-show-dot-for-dired t)
-     ;; Enable ido-flx for matching
-     (flx-ido-mode t)
-     ;; disable ido faces to see flx highlights.
-     (setq ido-use-faces nil)
-     
-     ;; Enable idomenu
-     (define-key my-keys-minor-mode-map (kbd "M-i") 'idomenu)
-   #+end_src
-** Fuzzy EMACS Funtion Calls
-   We use smex, which is an M-x enhancement built on top of IDO.
-   #+begin_src emacs-lisp
-     (smex-initialize)
-     (define-key my-keys-minor-mode-map (kbd "M-x") 'smex)
-     (define-key my-keys-minor-mode-map (kbd "M-X") 'smex-major-mode-commands)
-   #+end_src
 ** Completion in an ELISP Minibffer
    #+begin_src emacs-lisp
      (define-key read-expression-map [(tab)] 'completion-at-point)
@@ -198,11 +142,11 @@
    and gnome's "gnome-open").
    #+begin_src emacs-lisp
      (setq browse-url-generic-program
-	   (cond
-	    ((string= system-type "gnu/linux") "gnome-open")
-	    (t "open")
-	    )
-	   )
+           (cond
+            ((string= system-type "gnu/linux") "gnome-open")
+            (t "open")
+            )
+           )
      ;; The function to open a url should use the generic program
      (setq browse-url-browser-function 'browse-url-generic)
    #+end_src
@@ -258,11 +202,6 @@
    We make ibuffer the default buffer menu.
    #+begin_src emacs-lisp
      (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
-   #+end_src
-** Terminal settings
-   We use the multi-term terminal emulator.
-   #+begin_src emacs-lisp
-     (require 'multi-term)
    #+end_src
 ** Fill Column
    We set the fill column to a reasonable default.
@@ -332,17 +271,32 @@
    #+begin_src emacs-lisp
      (require 'recentf)
      (recentf-mode 1)
-     (setq recentf-max-menu-items 25)
-     (define-key my-keys-minor-mode-map (kbd "C-x C-r") 'recentf-open-files)
    #+end_src
 ** Autopair mode
    Enable autopair mode globally
    #+begin_src emacs-lisp
      (autopair-global-mode)
    #+end_src
-** Disable audible ding
+** Helm
+   Set up Helm
    #+begin_src emacs-lisp
-     (setq visible-bell t)
+     (require 'helm)
+     (require 'helm-config)
+
+     ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+     ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+     ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+     (global-set-key (kbd "C-c h") 'helm-command-prefix)
+     (global-unset-key (kbd "C-x c"))
+
+     ;; rebind tab to run persistent action
+     (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
+     ;; make TAB works in terminal
+     (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
+     ;; list actions using C-z
+     (define-key helm-map (kbd "C-z") 'helm-select-action)
+
+     (helm-mode 1)
    #+end_src
 * Languages
   Here we have language-specific settings.
@@ -355,7 +309,6 @@
 ** Go
    #+begin_src emacs-lisp
      (require 'go-mode)
-     (require 'go-autocomplete)
    #+end_src
 ** SQL
    #+begin_src emacs-lisp
@@ -389,27 +342,6 @@
    #+begin_src emacs-lisp
      (add-hook 'css-mode-hook 'rainbow-mode)
    #+end_src
-** Java
-   #+begin_src emacs-lisp
-     ;; Configures eclim
-     (require 'eclim)
-     (global-eclim-mode)
-     (require 'eclimd)
-
-     ;; Display error messages in the echo area
-     (setq help-at-pt-display-when-idle t)
-     (setq help-at-pt-timer-delay 0.1)
-     (help-at-pt-set-timer)
-
-     ;; Add eclim to auto complete, if there's an executable
-     (if eclim-executable
-         (progn
-           (require 'ac-emacs-eclim-source)
-           (ac-emacs-eclim-config)
-           )
-       )
-
-   #+end_src
 ** LaTeX
    #+begin_src emacs-lisp
      ;; This paragraph is copied from the emacs wiki
@@ -428,37 +360,4 @@
      (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
      (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
      (add-hook 'haskell-mode-hook 'haskell-doc-mode)
-   #+end_src
-* Projects
-  Here we have project-specific settings.
-** Tachyon
-   Tachyon is the UC Berkeley AMPLab project I'm working on.
-   #+begin_src emacs-lisp
-     ;; Sets Tachyon settings for java files in the tachyon directory
-     (defconst tachyon-dir (expand-file-name "~/programming/tachyon"))
-     (add-hook 'java-mode-hook
-	       (lambda ()
-		 "Sets tachyon as the java style if in the tachyon directory"
-		 (if (and (stringp buffer-file-name)
-			  (string-prefix-p tachyon-dir buffer-file-name))
-		     (set-fill-column 100))))
-
-   #+end_src
-** Google
-   We set up up the Google work environment. You must run prodaccess before this
-   will work.
-   #+begin_src emacs-lisp
-     (if (file-exists-p "/google/src/files/head/depot/eng/elisp/google.el")
-         (progn
-           ;; Load the emacs package
-           (load-file "/google/src/files/head/depot/eng/elisp/google.el")
-           (setq p4-use-p4config-exclusively t)
-           ;; Set up blaze inside emacs
-           (require 'google3-build)
-           (setq google-build-system "blaze")
-           ;; Initilaize grok, which allows you to browse code inside emacs
-           (grok-init)
-           ;; Code search
-           (require 'csearch)
-           ))
    #+end_src

@@ -22,6 +22,7 @@
      (c++-mode . "stroustrup")
      (java-mode . "tachyon")
      (awk-mode . "awk"))))
+ '(company-idle-delay 0.1)
  '(compilation-message-face (quote default))
  '(custom-safe-themes
    (quote

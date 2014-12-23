@@ -294,13 +294,22 @@
   Here we have language-specific settings.
 ** Python
    #+begin_src emacs-lisp
-     ;; Loads elpy
-     (elpy-enable)
-     (elpy-use-ipython)
+     ;; Loads anaconda mode
+     (require 'anaconda-mode)
+     (require 'company-anaconda)
+     (add-hook 'python-mode-hook 'anaconda-mode)
+     (add-to-list 'company-backends 'company-anaconda)
+     ;; Sets the python interpreter to be ipython. To trick emacs into thinking we're
+     ;; still running regular python, we run ipython in classic mode.
+     (setq
+      python-shell-interpreter "ipython"
+      python-shell-interpreter-args "-i --classic")
    #+end_src
 ** Go
    #+begin_src emacs-lisp
      (require 'go-mode)
+     (require 'company-go)
+     (add-to-list 'company-backends 'company-go)
    #+end_src
 ** SQL
    #+begin_src emacs-lisp
@@ -336,13 +345,15 @@
    #+end_src
 ** LaTeX
    #+begin_src emacs-lisp
-     ;; This paragraph is copied from the emacs wiki
      (add-hook 'LaTeX-mode-hook 'visual-line-mode)
      (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
      (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
      (setq reftex-plug-into-AUCTeX t)
      ;; We want to compile to PDFs by default
      (setq TeX-PDF-mode t)
+     ;; Company completion for AucTeX
+     (require 'company-auctex)
+     (company-auctex-init)
    #+end_src
 ** Haskell
    #+begin_src emacs-lisp
@@ -352,4 +363,11 @@
      (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
      (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
      (add-hook 'haskell-mode-hook 'haskell-doc-mode)
+   #+end_src
+** C/C++
+   #+begin_src emacs-lisp
+     (require 'company-c-headers)
+     (add-to-list 'company-backends 'company-c-headers)
+     (define-key c-mode-map (kbd "M-.") 'semantic-ia-fast-jump)
+     (define-key c++-mode-map (kbd "M-.") 'semantic-ia-fast-jump)
    #+end_src

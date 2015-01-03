@@ -43,6 +43,7 @@
         paredit-open-round
         query-replace
         sgml-slash
+        sp--self-insert-command
         wdired-finish-edit
         yas-expand
         ))

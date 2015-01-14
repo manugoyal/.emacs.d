@@ -5,64 +5,80 @@
 
 * General
   Here we have general editing and system settings.
-** Personal Keybinding Map
-   We define a minor mode for personal keybindings, so that they always take
-   precedence over major modes and other minor modes
+** Bind Key
+   We use the bind-key package, which provides useful functions for
+   creating personal keybindings
    #+begin_src emacs-lisp
-     ;; Based on http://stackoverflow.com/questions/683425/globally-override-key-binding-in-emacs
-     (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
-     (define-minor-mode my-keys-minor-mode
-       "A minor mode so that my key settings override annoying major modes."
-       t " my-keys" 'my-keys-minor-mode-map)
-     (my-keys-minor-mode 1)
+     (use-package bind-key
+       :ensure t)
    #+end_src
 ** Shell Environment variables
    We use the exec-path-from-shell package to grab some environment variable
    definitions from the shell environment.
    #+begin_src emacs-lisp
-     (if (not (eq system-type 'windows-nt))
-         (exec-path-from-shell-initialize)
+     (use-package exec-path-from-shell
+       :ensure t
+       :config
+       (if (not (eq system-type 'windows-nt))
+           (progn
+             (add-to-list 'exec-path-from-shell-variables "TMPDIR")
+             (exec-path-from-shell-initialize)
+             )
+         )
        )
    #+end_src
 ** CEDET
    We configure CEDET, a suite of semantic analysis and development tools for
    emacs.
    #+begin_src emacs-lisp
-     ;; Activate semantic and ede
-     (require 'semantic)
-     (require 'semantic/ia)
-     (semantic-mode t)
-     (global-ede-mode t)
+     ;; Load the downloaded version of CEDET
+     (load-file (concat downloads-dir "cedet/cedet-devel-load.el"))
+     (use-package semantic
+       :init
+       (semantic-mode t)
+       )
+     (use-package ede
+       :init
+       (global-ede-mode t)
+       )
    #+end_src
 ** TRAMP
    We configure TRAMP, a package that provides transparent remote file access
    over various protocols.
    #+begin_src emacs-lisp
-     ;; Tramp saves backups to the local directory, for speed.
-     (setq tramp-auto-save-directory "\"/tmp\"")
+     (use-package tramp
+       :ensure t
+       :init
+       ;; Tramp saves backups to the local directory, for speed.
+       (setq tramp-auto-save-directory "\"/tmp\"")
+       )
    #+end_src
 ** Company mode
-   A nice auto-completion framework.
+   Company is a generic auto-completion framework. It allows you to
+   define backends that source completions from different sources, so
+   you can have language-specific completions
    #+begin_src emacs-lisp
-     (require 'company)
-     (global-company-mode)
-   #+end_src
-** Ag
-   We use the search tool Ag to search through large codebases, because it's
-   significantly faster and smarter than grep or ack.
-   #+begin_src emacs-lisp
-     (require 'ag)
-     (setq ag-highlight-search t)
+     (use-package company
+       :ensure t
+       :init
+       (add-hook 'prog-mode-hook 'company-mode))
    #+end_src
 ** Real-Time Syntax Checking
-   We use flycheck, which is better than flymake.
+   We use flycheck to check syntax and style in code. flycheck will
+   run language-specific code checkers based on the file type and
+   highlight problems.
    #+begin_src emacs-lisp
-     (require 'flycheck)
-     (add-hook 'prog-mode-hook 'flycheck-mode)
-     ;; Set the standard library to libc++ so that C++11 headers will work
-     (setq flycheck-clang-standard-library "libc++")
-     ;; Set the flake8rc location for the flake8 checker
-     (setq flycheck-flake8rc "~/.config/flake8")
+     (use-package flycheck
+       :ensure t
+       :init
+       (progn
+         (add-hook 'prog-mode-hook 'flycheck-mode)    
+         ;; Set the standard library to libc++ so that C++11 headers will work
+         (setq flycheck-clang-standard-library "libc++")
+         ;; Set the flake8rc location for the flake8 checker
+         (setq flycheck-flake8rc "~/.config/flake8")
+         )
+       )
    #+end_src
 ** Mac OSX Key Bindings
    We set the alt, command, and super modifiers to meta.
@@ -84,54 +100,79 @@
 ** File Position Persistence
    We save the cursor position at visited files in between sessions.
    #+begin_src emacs-lisp
-     (require 'saveplace)
-     (setq-default save-place t)
-     (setq save-place-file "~/.emacs.d/.saved-places")
+     (use-package saveplace
+       :ensure t
+       :init
+       (progn
+         (setq-default save-place t)
+         (setq save-place-file "~/.emacs.d/.saved-places")
+         )
+       )
    #+end_src
 ** camelCase Navigation
    We want to navigate camelCase words as separate words.
    #+begin_src emacs-lisp
-     (global-subword-mode)
+     (use-package subword
+       :diminish subword-mode
+       :init
+       (global-subword-mode)
+     )
    #+end_src
-** S-Expression Editing
-   We want to show matching parentheses and have an easy key chord for deleting
-   matching pairs.
+** Parentheses operations
+   Most of the automatic parentheses management libraries in emacs are either
+   overkill or buggy, so we just add a bare minimum few key-bindings
    #+begin_src emacs-lisp
-     (show-paren-mode)
-     (define-key my-keys-minor-mode-map (kbd "M-D") 'delete-pair)
+     (bind-key "M-D" 'delete-pair)
    #+end_src
 ** Jumping Around Buffers
-   We use ace-jump mode.
+   We use ace-jump mode, which highlights all occurences of a
+   character you enter in the current buffer and lets you immediately
+   jump to the place you want.
    #+begin_src emacs-lisp
-     (require 'ace-jump-mode)
-     (define-key my-keys-minor-mode-map (kbd "C-c c") 'ace-jump-char-mode)
+     (use-package ace-jump-mode
+       :ensure t
+       :demand
+       :bind ("C-c c" . ace-jump-char-mode))
    #+end_src
 ** Multiple Cursors
    We use the multiple-cursors package, which provides multiple cursors editing
    similar to what you would find in SublimeText.
    #+begin_src emacs-lisp
-     (require 'multiple-cursors)
-     (define-key my-keys-minor-mode-map (kbd "C-S-c C-S-c") 'mc/edit-lines)
-     (define-key my-keys-minor-mode-map (kbd "C->") 'mc/mark-next-like-this)
-     (define-key my-keys-minor-mode-map (kbd "C-<") 'mc/mark-previous-like-this)
-     (define-key my-keys-minor-mode-map (kbd "C-=") 'mc/mark-all-like-this-dwim)
+     (use-package multiple-cursors
+       :ensure t
+       :bind (("C-S-C C-S-C" . mc/edit-lines)
+              ("C->" . mc/mark-next-like-this)
+              ("C-<" . mc/mark-previous-like-this)
+              ("C-=" . mc/mark-all-like-this-dwim))
+       )
    #+end_src
 ** Completion in an ELISP Minibffer
    #+begin_src emacs-lisp
-     (define-key read-expression-map [(tab)] 'completion-at-point)
+     (bind-key "TAB" 'completion-at-point read-expression-map)
    #+end_src
 ** Spell Checking
    We use flyspell.
    #+begin_src emacs-lisp
-     (require 'flyspell)
-     (add-hook 'prog-mode-hook 'flyspell-prog-mode)
-     (add-hook 'text-mode-hook 'flyspell-mode)
-     ;; Sets flyspell correction to use two-finger mouse click
-     (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+     (use-package flyspell
+       :ensure t
+       :defer t
+       :init
+       (progn
+         (add-hook 'prog-mode-hook 'flyspell-prog-mode)
+         (add-hook 'text-mode-hook 'flyspell-mode)
+         )
+       :config
+       ;; Sets flyspell correction to use two-finger mouse click
+       (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
+       )
    #+end_src
 ** Color Scheme
    #+begin_src emacs-lisp
-     (load-theme 'zenburn)
+     (use-package zenburn-theme
+       :ensure t
+       :init
+       (load-theme 'zenburn)
+       )
    #+end_src
 ** Opening URLs
    In order to open URLs in the correct external browser, we set the browser
@@ -150,41 +191,36 @@
 ** File Management
    We configure dired, the emacs file manager.
    #+begin_src emacs-lisp
-     ;; Use dired+, because it has more features
-     (require 'dired+)
-     ;; Running dired-omit mode should hide all dotfiles
-     (setq dired-omit-files "^\\..*$")
+     (use-package dired+
+       :ensure t
+       :commands dired
+       :config
+       ;; Running dired-omit mode should hide all dotfiles
+       (setq dired-omit-files "^\\..*$")
+       )
    #+end_src
 ** Window and Frame Navigation
    We define keybindings for navigating to different windows and frames. We copy
    the windmove-default-keybindings and framemove-default-keybindings functions
    and modify them to use my-keys-minor-mode-map.
    #+begin_src emacs-lisp
-     ;; windmove
-     ((lambda ()
-        (setq modifier 'shift)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'left))
-          'windmove-left)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'right))
-          'windmove-right)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'up))
-          'windmove-up)
-        (define-key my-keys-minor-mode-map (vector (list modifier 'down))
-          'windmove-down))
-      )
-     ;; framemove
-     ((lambda ()
-        (setq modifiers '(control shift))
-        (define-key my-keys-minor-mode-map (vector (append modifiers '(down)))
-          'fm-down-frame)
-        (define-key my-keys-minor-mode-map (vector (append modifiers '(up)))
-          'fm-up-frame)
-        (define-key my-keys-minor-mode-map (vector (append modifiers '(left)))
-          'fm-left-frame)
-        (define-key my-keys-minor-mode-map (vector (append modifiers '(right)))
-          'fm-right-frame)
-        ))
-     
+     (use-package windmove
+       :ensure t
+       :bind (("S-<left>" . windmove-left)
+              ("S-<right>" . windmove-right)
+              ("S-<up>" . windmove-up)
+              ("S-<down>" . windmove-down)
+              )
+       )
+
+     (use-package framemove
+       :ensure t
+       :bind (("C-S-<left>" . fm-left-frame)
+              ("C-S-<right>" . fm-right-frame)
+              ("C-S-<up>" . fm-up-frame)
+              ("C-S-<down>" . fm-down-frame)
+              )
+       )
    #+end_src
 ** UTF-8 Encoding
    We set everything to UTF-8 encoding.
@@ -194,11 +230,6 @@
      (set-selection-coding-system 'utf-8)
      (setq current-language-environment "UTF-8")
      (prefer-coding-system 'utf-8)
-   #+end_src
-** Better buffer menu
-   We make ibuffer the default buffer menu.
-   #+begin_src emacs-lisp
-     (define-key my-keys-minor-mode-map (kbd "C-x C-b") 'ibuffer)
    #+end_src
 ** Fill Column
    We set the fill column to a reasonable default.
@@ -222,7 +253,12 @@
    tree, which provides an actual redo function for emacs and maintains all edit
    history by keeping a tree of undos and redos.
    #+begin_src emacs-lisp
-     (global-undo-tree-mode)
+     (use-package undo-tree
+       :ensure t
+       :diminish undo-tree-mode
+       :init
+       (global-undo-tree-mode)
+       )
    #+end_src
 ** Turn off All Menus and Tool Bars and Whizbangs
    We don't need that stuff.
@@ -256,92 +292,130 @@
      (setq-default case-fold-search t)
    #+end_src
 ** Whitespace mode
-   Turn on whitespace mode when programming. Additional settings for whitespace
-   mode can be found in custom.el.
+   Turn on whitespace mode, which helps track down and clean up bad
+   whitespace in code. Additional settings for whitespace mode can be
+   found in custom.el.
    #+begin_src emacs-lisp
-     (require 'whitespace)
-     (add-hook 'prog-mode-hook 'whitespace-mode)
-   #+end_src
-** Recentf mode
-   Enable recentf-mode, which allows you to access your most recently-opened
-   files
-   #+begin_src emacs-lisp
-     (require 'recentf)
-     (recentf-mode 1)
+     (use-package whitespace
+       :ensure t
+       :diminish whitespace-mode
+       :init
+       (add-hook 'prog-mode-hook 'whitespace-mode)
+       )
    #+end_src
 ** Helm
-   Set up Helm
+   Set up Helm, a completion and narrowing system for executing
+   commands in emacs.
    #+begin_src emacs-lisp
-     (require 'helm)
-     (require 'helm-config)
-
-     ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
-     ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
-     ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
-     (global-set-key (kbd "C-c h") 'helm-command-prefix)
-     (global-unset-key (kbd "C-x c"))
-
-     ;; rebind tab to run persistent action
-     (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action)
-     ;; make TAB works in terminal
-     (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action)
-     ;; list actions using C-z
-     (define-key helm-map (kbd "C-z") 'helm-select-action)
-
-     (helm-mode 1)
+     (use-package helm
+       :ensure t
+       :diminish helm-mode
+       :config
+       (progn
+         (require 'helm-config)
+         (helm-mode 1)
+         (bind-keys :map helm-map
+                    ("<tab>" . helm-execute-persistent-action)
+                    ("C-i" . helm-execute-persistent-action)
+                    ("C-z" . helm-select-action)
+                    )
+         )
+       :bind (("C-c h" . helm-mini)
+              ("C-x C-f" . helm-find-files)
+              ("C-x f" . helm-find)
+              ("M-y" . helm-show-kill-ring)
+              ("M-x" . helm-M-x)
+              )
+       )
    #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python
    #+begin_src emacs-lisp
-     ;; Loads anaconda mode
-     (require 'anaconda-mode)
-     (require 'company-anaconda)
-     (add-hook 'python-mode-hook 'anaconda-mode)
-     (add-to-list 'company-backends 'company-anaconda)
-     ;; Sets the python interpreter to be ipython. To trick emacs into thinking we're
-     ;; still running regular python, we run ipython in classic mode.
+     (use-package anaconda-mode
+       :ensure t
+       :config
+       (progn
+         (add-hook 'python-mode-hook 'anaconda-mode)
+         (add-hook 'python-mode-hook 'eldoc-mode)
+         )
+       )
+
+     (use-package company-anaconda
+       :ensure t
+       :config
+       (add-to-list 'company-backends 'company-anaconda))
+
+     ;; Sets the python interpreter to be ipython. To trick emacs into
+     ;; thinking we're still running regular python, we run ipython in
+     ;; classic mode.
      (setq
       python-shell-interpreter "ipython"
       python-shell-interpreter-args "-i --classic")
    #+end_src
 ** Go
    #+begin_src emacs-lisp
-     (require 'go-mode)
-     (require 'company-go)
-     (add-to-list 'company-backends 'company-go)
+     (use-package go-mode
+       :ensure t
+       :mode "\\.go"
+       :config
+       (exec-path-from-shell-copy-env "GOPATH")
+       )
+     (use-package company-go
+       :ensure t
+       :config
+       (add-to-list 'company-backends 'company-go)
+       )
    #+end_src
 ** SQL
    #+begin_src emacs-lisp
-     (require 'sql-indent)
+     (use-package sql-indent
+       :ensure t
+       :mode "\\.sql"
+       )
      (setq sql-mysql-login-params (quote (user server port password)))
    #+end_src
 ** HTML/XML/Javascript
    #+begin_src emacs-lisp
-     ;; Make js2 the default javascript mode
-     (require 'js2-mode)
-     (add-to-list 'auto-mode-alist '("\\.js$" . js2-mode))
+     (use-package js2-mode
+       :ensure t
+       :mode "\\.js"
+       )
    #+end_src
 ** OCaml
     #+begin_src emacs-lisp
-      (if (file-exists-p (expand-file-name "~/.opam"))
-          (progn
-            ;; Get the necessary environment variable definitions
-            (exec-path-from-shell-copy-env "OCAML_TOPLEVEL_PATH")
-            ;; Add the .opam site-lisp directory to the load path
-            (push (concat
-                   (getenv "OCAML_TOPLEVEL_PATH")
-                   "/../../share/emacs/site-lisp")
-                  load-path)
-            ;; utop
-            (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
-            (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
-            (setq utop-command "opam config exec \"utop -emacs\"")
-            ))
+      (use-package tuareg
+        :ensure t
+        :mode "\\.ml"
+        :config
+        (if (file-exists-p (expand-file-name "~/.opam"))
+            (progn
+              ;; Get the necessary environment variable definitions
+              (exec-path-from-shell-copy-env "OCAML_TOPLEVEL_PATH")
+              ;; Add the .opam site-lisp directory to the load path
+              (push (concat
+                     (getenv "OCAML_TOPLEVEL_PATH")
+                     "/../../share/emacs/site-lisp")
+                    load-path)
+              ;; utop
+              (use-package utop
+                :ensure t
+                :mode "\\.ml"
+                )
+              (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
+              (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
+              (setq utop-command "opam config exec \"utop -emacs\"")
+              ))
+        )
     #+end_src
 ** CSS
    #+begin_src emacs-lisp
-     (add-hook 'css-mode-hook 'rainbow-mode)
+     (use-package rainbow-mode
+       :ensure t
+       :mode "\.css"
+       :init
+       (add-hook 'css-mode-hook 'rainbow-mode)
+       )
    #+end_src
 ** LaTeX
    #+begin_src emacs-lisp
@@ -351,21 +425,39 @@
      (setq reftex-plug-into-AUCTeX t)
      ;; We want to compile to PDFs by default
      (setq TeX-PDF-mode t)
-
    #+end_src
 ** Haskell
    #+begin_src emacs-lisp
-     (require 'haskell-mode)
-     ;; Turn on haskell-mode features automatically
-     (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
-     (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
-     (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
-     (add-hook 'haskell-mode-hook 'haskell-doc-mode)
+     (use-package haskell-mode
+       :ensure t
+       :mode "\\.hs"
+       :config
+       (progn
+         ;; Turn on haskell-mode features automatically
+         (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
+         (add-hook 'haskell-mode-hook 'interactive-haskell-mode)
+         (add-hook 'haskell-mode-hook 'haskell-decl-scan-mode)
+         (add-hook 'haskell-mode-hook 'haskell-doc-mode)
+         )
+       )
    #+end_src
 ** C/C++
    #+begin_src emacs-lisp
-     (require 'company-c-headers)
-     (add-to-list 'company-backends 'company-c-headers)
-     (define-key c-mode-map (kbd "M-.") 'semantic-ia-fast-jump)
-     (define-key c++-mode-map (kbd "M-.") 'semantic-ia-fast-jump)
+     (use-package company-c-headers
+       :ensure t
+       :config
+       (add-to-list 'company-backends 'company-c-headers))
+     (use-package cc-mode
+       :init
+       (progn
+        (bind-key  "M-." 'semantic-ia-fast-jump c-mode-map)
+        (bind-key  "M-." 'semantic-ia-fast-jump c++-mode-map)
+        ))
+   #+end_src
+** Bison
+   #+begin_src emacs-lisp
+     (use-package bison-mode
+       :ensure t
+       :mode "\\.y"
+       )
    #+end_src

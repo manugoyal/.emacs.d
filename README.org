@@ -381,9 +381,9 @@
    #+end_src
 ** SQL
    #+begin_src emacs-lisp
-     (use-package sql-indent
+     (use-package sql
        :ensure t
-       :mode "\\.sql"
+       :mode ("\\.sql" . sql-mode)
        )
      (setq sql-mysql-login-params (quote (user server port password)))
    #+end_src
@@ -424,7 +424,6 @@
    #+begin_src emacs-lisp
      (use-package rainbow-mode
        :ensure t
-       :mode "\.css"
        :init
        (add-hook 'css-mode-hook 'rainbow-mode)
        )

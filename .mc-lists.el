@@ -33,6 +33,7 @@
         nxml-electric-slash
         org-delete-char
         org-kill-line
+        org-self-insert-command
         paredit-backward
         paredit-backward-kill-word
         paredit-doublequote

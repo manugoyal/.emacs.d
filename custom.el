@@ -57,6 +57,7 @@
  '(syslog-warn-face
    (quote
     ((t :background unspecified :foreground "#FD971F" :weight bold))))
+ '(term-buffer-maximum-size 0)
  '(vc-annotate-background nil)
  '(vc-annotate-color-map
    (quote

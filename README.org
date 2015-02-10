@@ -31,8 +31,6 @@
    We configure CEDET, a suite of semantic analysis and development tools for
    emacs.
    #+begin_src emacs-lisp
-     ;; Load the downloaded version of CEDET
-     (load-file (concat downloads-dir "cedet/cedet-devel-load.el"))
      (use-package semantic
        :init
        (semantic-mode t)

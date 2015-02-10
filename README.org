@@ -338,6 +338,16 @@
               )
        )
    #+end_src
+** Recentf
+   Enable recentf mode, which keeps track of the files most recently visited
+   #+begin_src emacs-lisp
+     (use-package recentf
+       :config
+       (progn
+         (recentf-mode 1)
+         (setq recentf-max-menu-items 25)
+         ))
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

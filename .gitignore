@@ -1,7 +1,6 @@
 *~
 *.elc
 README.el
-<<<<<<< HEAD
 .#*
 .DS_Store
 .python-environments

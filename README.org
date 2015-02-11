@@ -348,6 +348,13 @@
          (setq recentf-max-menu-items 25)
          ))
    #+end_src
+** Git
+   We use magit, the best git wrapper ever
+   #+begin_src emacs-lisp
+     (use-package magit
+       :ensure t
+       )
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

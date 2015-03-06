@@ -408,6 +408,14 @@
        :ensure t
        :mode "\\.js"
        )
+     (use-package web-mode
+       :ensure t
+       :mode "\\.jsx"
+       :config
+       (progn
+         (setq web-mode-enable-auto-quoting nil)
+         )
+       )
    #+end_src
 ** OCaml
     #+begin_src emacs-lisp

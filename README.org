@@ -27,6 +27,12 @@
          )
        )
    #+end_src
+** Revert buffer
+   We re-bind the revert-buffer command, which is originally on super-u, which
+   is inconvenient for Mac.
+   #+begin_src emacs-lisp
+     (bind-key "M-U" 'revert-buffer)
+   #+end_src
 ** CEDET
    We configure CEDET, a suite of semantic analysis and development tools for
    emacs.
@@ -459,6 +465,12 @@
      (setq reftex-plug-into-AUCTeX t)
      ;; We want to compile to PDFs by default
      (setq TeX-PDF-mode t)
+     ;; Use company-auctex
+     (use-package company-auctex
+       :ensure t
+       :config
+       (company-auctex-init)
+     )
    #+end_src
 ** Haskell
    #+begin_src emacs-lisp
@@ -486,6 +498,7 @@
        (progn
         (bind-key  "M-." 'semantic-ia-fast-jump c-mode-map)
         (bind-key  "M-." 'semantic-ia-fast-jump c++-mode-map)
+        (delete 'company-clang company-backends)
         ))
    #+end_src
 ** Bison

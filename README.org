@@ -494,7 +494,7 @@
        :config
        (add-to-list 'company-backends 'company-c-headers))
      (use-package cc-mode
-       :init
+       :config
        (progn
         (bind-key  "M-." 'semantic-ia-fast-jump c-mode-map)
         (bind-key  "M-." 'semantic-ia-fast-jump c++-mode-map)

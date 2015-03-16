@@ -32,6 +32,7 @@
         next-error
         nxml-electric-slash
         org-delete-char
+        org-force-self-insert
         org-kill-line
         org-self-insert-command
         paredit-backward

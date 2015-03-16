@@ -41,7 +41,6 @@
      ("#A45E0A" . 70)
      ("#A41F99" . 85)
      ("#49483E" . 100))))
- '(ido-enable-tramp-completion nil)
  '(magit-use-overlays nil)
  '(package-selected-packages
    (quote

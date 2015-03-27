@@ -328,6 +328,18 @@
        :ensure t
        )
    #+end_src
+** Minibuffer completion
+   We use Icomplete mode to view and cycle between different possible minibuffer
+   completions. More complex stuff like helm and ido are nice, but tend to get
+   *REALLY* slow when editing over remote connections, so we keep it simple.
+   #+begin_src emacs-lisp
+     (icomplete-mode 1)
+   #+end_src
+** Buffer menu
+   We use ibuffer, which is better than the default buffer menu
+   #+begin_src emacs-lisp
+     (bind-key "C-x C-b" 'ibuffer)
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

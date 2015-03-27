@@ -199,9 +199,13 @@
        :ensure t
        :commands dired
        :config
-       ;; Running dired-omit mode should hide all dotfiles
-       (setq dired-omit-files "^\\..*$")
        )
+     ;; Running dired-omit mode should hide all dotfiles
+     (setq dired-omit-files "^\\..*$")
+     ;; Never prompt for recursive copies of a directory
+     (setq dired-recursive-copies 'always)
+     ;; Never prompt for recursive deletes of a directory
+     (setq dired-recursive-deletes 'always)
    #+end_src
 ** Window and Frame Navigation
    We define keybindings for navigating to different windows and frames. We copy
@@ -305,43 +309,6 @@
        :diminish whitespace-mode
        :init
        (add-hook 'prog-mode-hook 'whitespace-mode)
-       )
-   #+end_src
-** Helm
-   Set up Helm, a completion and narrowing system for executing
-   commands in emacs.
-   #+begin_src emacs-lisp
-     (use-package helm
-       :ensure t
-       :diminish helm-mode
-       :config
-       (progn
-         (require 'helm-config)
-         (helm-mode 1)
-         (bind-keys :map helm-map
-                    ("<tab>" . helm-execute-persistent-action)
-                    ("C-i" . helm-execute-persistent-action)
-                    ("C-z" . helm-select-action)
-                    )
-
-         (setq
-          ;; open helm buffer inside current window, not occupy whole other window
-          helm-split-window-in-side-p t
-          ;; move to end or beginning of source when reaching top or bottom of
-          ;; source.
-          helm-move-to-line-cycle-in-source t
-          ;; search for library in `require' and `declare-function' sexp.
-          helm-ff-search-library-in-sexp t
-          ;; scroll 8 lines other window using M-<next>/M-<prior>
-          helm-scroll-amount 8
-          helm-ff-file-name-history-use-recentf t)
-         )
-       :bind (("C-c h" . helm-mini)
-              ("C-x C-f" . helm-find-files)
-              ("C-x f" . helm-find)
-              ("M-y" . helm-show-kill-ring)
-              ("M-x" . helm-M-x)
-              )
        )
    #+end_src
 ** Recentf

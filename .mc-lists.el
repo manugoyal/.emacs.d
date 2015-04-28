@@ -52,5 +52,4 @@
 
 (setq mc/cmds-to-run-once
       '(
-        python-indent-dedent-line-backspace
         ))

@@ -122,11 +122,15 @@
        (global-subword-mode)
      )
    #+end_src
-** Parentheses operations
+** Parentheses
    Most of the automatic parentheses management libraries in emacs are either
-   overkill or buggy, so we just add a bare minimum few key-bindings
+   overkill or buggy, so we just add a bare minimum few key-bindings and
+   settings
    #+begin_src emacs-lisp
+     ;; Add a key-binding to delete matching pairs
      (bind-key "M-D" 'delete-pair)
+     ;; Show matching parentheses
+     (add-hook 'prog-mode-hook 'show-paren-mode)
    #+end_src
 ** Jumping Around Buffers
    We use ace-jump mode, which highlights all occurences of a
@@ -238,6 +242,7 @@
      (set-selection-coding-system 'utf-8)
      (setq current-language-environment "UTF-8")
      (prefer-coding-system 'utf-8)
+     (setenv "LC_CTYPE" "UTF-8")
    #+end_src
 ** Fill Column
    We set the fill column to a reasonable default.
@@ -326,14 +331,46 @@
    #+begin_src emacs-lisp
      (use-package magit
        :ensure t
+       :init
+       (setq magit-last-seen-setup-instructions "1.4.0")
        )
    #+end_src
 ** Minibuffer completion
-   We use Icomplete mode to view and cycle between different possible minibuffer
-   completions. More complex stuff like helm and ido are nice, but tend to get
-   *REALLY* slow when editing over remote connections, so we keep it simple.
+   We use ido to complete wherever possible.
    #+begin_src emacs-lisp
-     (icomplete-mode 1)
+     (use-package ido
+       :ensure t
+       :config
+       (progn
+         (ido-mode 1)
+         (ido-everywhere 1)
+         (setq ido-use-faces nil)
+         (setq ido-auto-merge-work-directories-length -1)
+         )
+       )
+     ;; flx-ido provides better completion than regular
+     (use-package flx-ido
+       :ensure t
+       :config
+       (flx-ido-mode 1)
+       )
+     ;; ido-ubiquitous provides ido completion for all minibuffer stuff
+     (use-package ido-ubiquitous
+       :ensure t
+       :config
+       (ido-ubiquitous-mode 1)
+       )
+     ;; smex provides ido completion in functions
+     (use-package smex
+       :ensure t
+       :config
+       (progn
+         (global-set-key (kbd "M-x") 'smex)
+         (global-set-key (kbd "M-X") 'smex-major-mode-commands)
+         ;; This is the old M-x.
+         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
+         )
+       )
    #+end_src
 ** Buffer menu
    We use ibuffer, which is better than the default buffer menu
@@ -497,4 +534,11 @@
        :ensure t
        :config
        (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
+   #+end_src
+** Clojure
+   #+begin_src emacs-lisp
+     ;; Use the cider package
+     (use-package cider
+       :ensure t
+       )
    #+end_src

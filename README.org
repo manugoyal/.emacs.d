@@ -378,6 +378,13 @@
    #+begin_src emacs-lisp
      (bind-key "C-x C-b" 'ibuffer)
    #+end_src
+** Projectile
+   Projectile is a tool to enable searching through projects easily
+   #+begin_src emacs-lisp
+     (use-package projectile
+       :ensure t
+       )
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

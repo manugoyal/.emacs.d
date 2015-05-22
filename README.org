@@ -21,7 +21,8 @@
        :config
        (if (not (eq system-type 'windows-nt))
            (progn
-             (add-to-list 'exec-path-from-shell-variables "TMPDIR")
+             (if (not (string= "" (exec-path-from-shell-getenv "TMPDIR")))
+                 (add-to-list 'exec-path-from-shell-variables "TMPDIR"))
              (exec-path-from-shell-initialize)
              )
          )

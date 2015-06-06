@@ -386,19 +386,7 @@
   Here we have language-specific settings.
 ** Python
    #+begin_src emacs-lisp
-     (use-package anaconda-mode
-       :ensure t
-       :config
-       (progn
-         (add-hook 'python-mode-hook 'anaconda-mode)
-         (add-hook 'python-mode-hook 'eldoc-mode)
-         )
-       )
-
-     (use-package company-anaconda
-       :ensure t
-       :config
-       (add-to-list 'company-backends 'company-anaconda))
+     (elpy-enable)
 
      ;; Sets the python interpreter to be ipython. To trick emacs into
      ;; thinking we're still running regular python, we run ipython in

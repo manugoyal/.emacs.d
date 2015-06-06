@@ -49,6 +49,7 @@
      (progn t elisp--witness--lisp)
      (progn t elisp--witness--lisp)
      zenburn-theme yasnippet wrap-region wgrep-ag websocket web-mode utop use-package undo-tree tuareg sql-indent sml-mode smartparens scss-mode request rainbow-mode pyvenv python-environment popup paredit multiple-cursors markdown-mode magit-tramp magit-push-remote less-css-mode json-mode js2-mode iedit highlight-indentation helm-ag haskell-mode go-mode fuzzy framemove flycheck find-file-in-project exec-path-from-shell epc dired-sort-menu dired+ company-go company-c-headers company-anaconda cider bison-mode auctex ag ace-jump-mode)))
+ '(safe-local-variable-values (quote ((whitespace-line-column . 100))))
  '(syslog-debug-face
    (quote
     ((t :background unspecified :foreground "#A1EFE4" :weight bold))))

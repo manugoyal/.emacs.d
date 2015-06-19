@@ -382,6 +382,16 @@
    #+begin_src emacs-lisp
      (bind-key "C-x C-b" 'ibuffer)
    #+end_src
+** Wgrep
+   Wgrep mode turns the grep buffer into an editable buffer, so you can make
+   changes to the results of a grep query and then save them across files.
+   #+begin_src emacs-lisp
+     (use-package wgrep
+       :ensure t
+       :init
+       (require 'wgrep)
+       )
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

@@ -396,7 +396,21 @@
   Here we have language-specific settings.
 ** Python
    #+begin_src emacs-lisp
-     (elpy-enable)
+     (use-package jedi
+       :ensure t
+       :init
+       (progn
+         (add-hook 'python-mode-hook 'jedi:setup)
+         (setq jedi:complete-on-dot t)
+         )
+       )
+     (use-package company-jedi
+       :ensure t
+       :init
+       (progn
+         (add-to-list 'company-backends 'company-jedi)
+         )
+       )
 
      ;; Sets the python interpreter to be ipython. To trick emacs into
      ;; thinking we're still running regular python, we run ipython in

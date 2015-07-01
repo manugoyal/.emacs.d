@@ -392,6 +392,19 @@
        (require 'wgrep)
        )
    #+end_src
+** Find file in project
+   Create a binding for finding a file in a large project
+   #+begin_src emacs-lisp
+     ;; find-file-in-project-by-selected is better than plain old
+     ;; find-file-in-project, because it lets you narrow down the list of candidates
+     ;; with a keyword before giving you the interactive menu. This is much faster
+     ;; than starting with the interactive menu for large projects.
+     (use-package find-file-in-project
+       :ensure t
+       :init
+       (bind-key "C-c f" 'find-file-in-project-by-selected)
+       )
+   #+end_src
 * Languages
   Here we have language-specific settings.
 ** Python

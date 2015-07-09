@@ -546,6 +546,10 @@
         (bind-key  "M-." 'semantic-ia-fast-jump c++-mode-map)
         (delete 'company-clang company-backends)
         ))
+
+     ;; Set the language standard to c++11 for C++
+     (add-hook 'c++-mode-hook
+               (lambda () (setq flycheck-clang-language-standard "c++11")))
    #+end_src
 ** Bison
    #+begin_src emacs-lisp

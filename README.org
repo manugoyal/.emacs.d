@@ -473,7 +473,6 @@
     #+begin_src emacs-lisp
       (use-package tuareg
         :ensure t
-        :mode "\\.ml"
         :config
         (if (file-exists-p (expand-file-name "~/.opam"))
             (progn

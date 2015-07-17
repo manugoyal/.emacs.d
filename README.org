@@ -65,8 +65,13 @@
    #+begin_src emacs-lisp
      (use-package company
        :ensure t
-       :init
-       (add-hook 'prog-mode-hook 'company-mode))
+       :config
+       (progn
+         (add-hook 'prog-mode-hook 'company-mode)
+         ;; company-capf is problematic
+         (delete 'company-capf company-backends)
+         )
+       )
    #+end_src
 ** Real-Time Syntax Checking
    We use flycheck to check syntax and style in code. flycheck will
@@ -77,7 +82,7 @@
        :ensure t
        :init
        (progn
-         (add-hook 'prog-mode-hook 'flycheck-mode)    
+         (add-hook 'prog-mode-hook 'flycheck-mode)
          ;; Set the standard library to libc++ so that C++11 headers will work
          (setq flycheck-clang-standard-library "libc++")
          ;; Set the flake8rc location for the flake8 checker
@@ -414,14 +419,17 @@
        :init
        (progn
          (add-hook 'python-mode-hook 'jedi:setup)
-         (setq jedi:complete-on-dot t)
-         )
+         ;; Disable semantic-mode, since jedi is good enough
+         (add-hook 'python-mode-hook (lambda () (semantic-mode -1)))
        )
      (use-package company-jedi
        :ensure t
-       :init
+       :config
        (progn
          (add-to-list 'company-backends 'company-jedi)
+         ;; Disable auto-complete when we start jedi, because we don't want both
+         ;; auto-complete and company running
+         (add-hook 'jedi-mode-hook (lambda () (auto-complete-mode -1)))
          )
        )
 

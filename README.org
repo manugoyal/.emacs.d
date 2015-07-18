@@ -421,6 +421,7 @@
          (add-hook 'python-mode-hook 'jedi:setup)
          ;; Disable semantic-mode, since jedi is good enough
          (add-hook 'python-mode-hook (lambda () (semantic-mode -1)))
+         )
        )
      (use-package company-jedi
        :ensure t

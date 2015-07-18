@@ -583,3 +583,9 @@
        :ensure t
        )
    #+end_src
+** Erlang
+   #+begin_src emacs-lisp
+     (use-package erlang
+       :ensure t
+       )
+   #+end_src

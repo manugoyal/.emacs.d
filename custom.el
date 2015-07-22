@@ -44,6 +44,7 @@
      ("#A45E0A" . 70)
      ("#A41F99" . 85)
      ("#49483E" . 100))))
+ '(magit-revert-buffers 1)
  '(magit-use-overlays nil)
  '(package-selected-packages
    (quote

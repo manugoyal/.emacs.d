@@ -32,6 +32,7 @@
         next-error
         nxml-electric-slash
         org-delete-char
+        org-end-of-line
         org-force-self-insert
         org-kill-line
         org-self-insert-command

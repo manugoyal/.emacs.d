@@ -337,12 +337,12 @@
          ))
    #+end_src
 ** Git
-   We use magit, the best git wrapper ever
+   We use magit
    #+begin_src emacs-lisp
      (use-package magit
        :ensure t
        :init
-       (setq magit-last-seen-setup-instructions "1.4.0")
+       (bind-key "C-c m" 'magit-status)
        )
    #+end_src
 ** Minibuffer completion

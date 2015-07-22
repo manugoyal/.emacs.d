@@ -298,11 +298,6 @@
    #+begin_src emacs-lisp
      (setq sentence-end-double-space nil)
    #+end_src
-** Font
-   We use a variable-width font if we're in buffers with human language.
-   #+begin_src emacs-lisp
-     (add-hook 'text-mode-hook 'variable-pitch-mode)
-   #+end_src
 ** Case-sensitivity in searches
    By default, we want case sensitivity in searches and replaces to be smart.
    That is, if your search doesn't use capital letters, emacs will ignore case.

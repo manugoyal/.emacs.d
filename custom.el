@@ -21,8 +21,6 @@
     ((c-mode . "k&r")
      (c++-mode . "stroustrup")
      (awk-mode . "awk"))))
- '(company-idle-delay 0.1)
- '(company-minimum-prefix-length 2)
  '(compilation-message-face (quote default))
  '(custom-safe-themes
    (quote

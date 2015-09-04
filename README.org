@@ -23,6 +23,8 @@
            (progn
              (if (not (string= "" (exec-path-from-shell-getenv "TMPDIR")))
                  (add-to-list 'exec-path-from-shell-variables "TMPDIR"))
+             (add-to-list 'exec-path-from-shell-variables "LANG")
+             (add-to-list 'exec-path-from-shell-variables "LC_ALL")
              (exec-path-from-shell-initialize)
              )
          )

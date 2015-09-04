@@ -83,8 +83,6 @@
        :init
        (progn
          (add-hook 'prog-mode-hook 'flycheck-mode)
-         ;; Set the standard library to libc++ so that C++11 headers will work
-         (setq flycheck-clang-standard-library "libc++")
          ;; Set the flake8rc location for the flake8 checker
          (setq flycheck-flake8rc "~/.config/flake8")
          )
@@ -550,9 +548,12 @@
         (delete 'company-clang company-backends)
         ))
 
-     ;; Set the language standard to c++11 for C++
      (add-hook 'c++-mode-hook
-               (lambda () (setq flycheck-clang-language-standard "c++11")))
+               (lambda ()
+                 ;; Set the standard library to libc++ so that C++11 headers will work
+                 (setq flycheck-clang-standard-library "libc++")
+                 ;; Set the language standard to c++11 for C++
+                 (setq-local flycheck-clang-language-standard "c++11")))
    #+end_src
 ** Bison
    #+begin_src emacs-lisp

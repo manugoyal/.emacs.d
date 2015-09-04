@@ -29,7 +29,6 @@
  '(ediff-split-window-function (quote split-window-horizontally))
  '(fci-rule-color "#49483E")
  '(flycheck-checker-error-threshold 1000)
- '(flycheck-clang-language-standard "c++11")
  '(flycheck-disabled-checkers (quote (emacs-lisp-checkdoc)))
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors

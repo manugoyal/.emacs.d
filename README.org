@@ -590,3 +590,9 @@
        :ensure t
        )
    #+end_src
+** YAML
+   #+begin_src emacs-lisp
+     (use-package yaml-mode
+       :config
+       (require 'yaml-mode))
+   #+end_src

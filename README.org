@@ -325,6 +325,8 @@
      (use-package recentf
        :config
        (progn
+         ;; Keep files that are remote or readable, checking in that order
+         (setq recentf-keep '(file-remote-p file-readable-p))
          (recentf-mode 1)
          (setq recentf-max-menu-items 25)
          ))

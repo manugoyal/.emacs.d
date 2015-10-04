@@ -314,11 +314,7 @@
        :ensure t
        :diminish whitespace-mode
        :init
-       (progn
-         ;; We need to run whitespace-mode after processing file-local and dir-local
-         ;; variables
-         (add-hook 'hack-local-variables-hook 'whitespace-mode)
-         )
+       (add-hook 'prog-mode-hook 'whitespace-mode)
        )
    #+end_src
 ** Recentf
@@ -341,6 +337,9 @@
        :init
        (bind-key "C-c m" 'magit-status)
        )
+
+     ;; For vc-git-grep
+     (require 'vc-git)
    #+end_src
 ** Minibuffer completion
    We use ido to complete wherever possible.

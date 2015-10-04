@@ -317,18 +317,6 @@
        (add-hook 'prog-mode-hook 'whitespace-mode)
        )
    #+end_src
-** Recentf
-   Enable recentf mode, which keeps track of the files most recently visited
-   #+begin_src emacs-lisp
-     (use-package recentf
-       :config
-       (progn
-         ;; Keep files that are remote or readable, checking in that order
-         (setq recentf-keep '(file-remote-p file-readable-p))
-         (recentf-mode 1)
-         (setq recentf-max-menu-items 25)
-         ))
-   #+end_src
 ** Git
    We use magit
    #+begin_src emacs-lisp

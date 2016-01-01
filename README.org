@@ -511,12 +511,33 @@
    #+end_src
 ** LaTeX
    #+begin_src emacs-lisp
-     (add-hook 'LaTeX-mode-hook 'visual-line-mode)
-     (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
-     (setq reftex-plug-into-AUCTeX t)
-     ;; We want to compile to PDFs by default
-     (setq TeX-PDF-mode t)
+     ;; Auctex
+     (use-package auctex
+       :ensure t
+       :mode ("\\.tex\\'" . latex-mode)
+       :commands (latex-mode LaTeX-mode plain-tex-mode)
+       :init
+       (progn
+         (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+         (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+         (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+         (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+         (setq TeX-auto-save t
+               TeX-parse-self t
+               TeX-save-query nil
+               TeX-PDF-mode t)
+         (setq-default TeX-master nil)))
+
+     (use-package preview
+       :commands LaTeX-preview-setup
+       :init
+       (progn
+         (setq-default
+          preview-scale 1.4
+          preview-scale-function
+          '(lambda ()
+             (* (/ 10.0 (preview-document-pt)) preview-scale)))))
+
      ;; Use company-auctex
      (use-package company-auctex
        :ensure t

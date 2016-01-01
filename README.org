@@ -464,28 +464,37 @@
    #+end_src
 ** OCaml
     #+begin_src emacs-lisp
-      (use-package tuareg
-        :ensure t
-        :config
-        (if (file-exists-p (expand-file-name "~/.opam"))
-            (progn
-              ;; Get the necessary environment variable definitions
-              (exec-path-from-shell-copy-env "OCAML_TOPLEVEL_PATH")
-              ;; Add the .opam site-lisp directory to the load path
-              (push (concat
-                     (getenv "OCAML_TOPLEVEL_PATH")
-                     "/../../share/emacs/site-lisp")
-                    load-path)
-              ;; utop
-              (use-package utop
-                :ensure t
-                :mode "\\.ml"
-                )
+      (if (file-exists-p (expand-file-name "~/.opam"))
+          (progn
+            ;; Setup environment variables using opam
+            (dolist (var (car (read-from-string
+                               (shell-command-to-string "opam config env --sexp"))))
+              (setenv (car var) (cadr var)))
+
+            ;; Update the emacs path
+            (setq exec-path (append (parse-colon-path (getenv "PATH"))
+                                    (list exec-directory)))
+
+            ;; Update the emacs load path
+            (add-to-list 'load-path
+                         (expand-file-name "../../share/emacs/site-lisp"
+                                           (getenv "OCAML_TOPLEVEL_PATH")))
+            ;; utop
+            (use-package utop
+              :ensure t
+              :config
               (autoload 'utop-setup-ocaml-buffer "utop" "Toplevel for OCaml" t)
-              (add-hook 'tuareg-mode-hook 'utop-setup-ocaml-buffer)
-              (setq utop-command "opam config exec \"utop -emacs\"")
-              ))
-        )
+              )
+
+            ;; ocp-indent
+            (require 'ocp-indent)
+            ;; merlin
+            (require 'merlin)
+            (add-hook 'tuareg-mode-hook 'merlin-mode t)
+            (setq merlin-command 'opam)
+            (add-to-list 'company-backends 'merlin-company-backend)
+            ))
+
     #+end_src
 ** CSS
    #+begin_src emacs-lisp

@@ -340,6 +340,11 @@
          (ido-everywhere 1)
          (setq ido-use-faces nil)
          (setq ido-auto-merge-work-directories-length -1)
+         ;; Don't record history in ido.last
+         (setq ido-enable-last-directory-history nil)
+         (setq ido-record-commands nil)
+         (setq ido-max-work-directory-list 0)
+         (setq ido-max-work-file-list 0)
          )
        )
      ;; flx-ido provides better completion than regular

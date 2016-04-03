@@ -36,19 +36,6 @@
    #+begin_src emacs-lisp
      (bind-key "M-U" 'revert-buffer)
    #+end_src
-** CEDET
-   We configure CEDET, a suite of semantic analysis and development tools for
-   emacs.
-   #+begin_src emacs-lisp
-     (use-package semantic
-       :init
-       (semantic-mode t)
-       )
-     (use-package ede
-       :init
-       (global-ede-mode t)
-       )
-   #+end_src
 ** TRAMP
    We configure TRAMP, a package that provides transparent remote file access
    over various protocols.
@@ -569,24 +556,18 @@
    #+end_src
 ** C/C++
    #+begin_src emacs-lisp
-     (use-package company-c-headers
-       :ensure t
-       :config
-       (add-to-list 'company-backends 'company-c-headers))
-     (use-package cc-mode
+     (use-package cc-mode)
+     ;; Use rtags, a clang-based completion and navigation database for c++
+     (use-package rtags
        :config
        (progn
-        (bind-key  "M-." 'semantic-ia-fast-jump c-mode-map)
-        (bind-key  "M-." 'semantic-ia-fast-jump c++-mode-map)
-        (delete 'company-clang company-backends)
-        ))
-
-     (add-hook 'c++-mode-hook
-               (lambda ()
-                 ;; Set the standard library to libc++ so that C++11 headers will work
-                 (setq flycheck-clang-standard-library "libc++")
-                 ;; Set the language standard to c++11 for C++
-                 (setq-local flycheck-clang-language-standard "c++11")))
+         (setq rtags-autostart-diagnostics t)
+         (rtags-diagnostics)
+         (setq rtags-completions-enabled t)
+         (push 'company-rtags company-backends)
+         (require 'flycheck-rtags)
+         )
+       )
    #+end_src
 ** Bison
    #+begin_src emacs-lisp

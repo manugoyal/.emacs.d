@@ -63,9 +63,8 @@
        :ensure t
        :config
        (progn
-         (add-hook 'prog-mode-hook 'company-mode)
-         ;; company-capf is problematic
-         (delete 'company-capf company-backends)
+         (add-hook 'prog-mode-hook 'global-company-mode)
+         (bind-key "C-<tab>" 'company-complete)
          )
        )
    #+end_src
@@ -400,17 +399,13 @@
      (use-package jedi
        :ensure t
        :init
-       (progn
-         (add-hook 'python-mode-hook 'jedi:setup)
-         ;; Disable semantic-mode, since jedi is good enough
-         (add-hook 'python-mode-hook (lambda () (semantic-mode -1)))
-         )
+       (add-hook 'python-mode-hook 'jedi:setup)
        )
      (use-package company-jedi
        :ensure t
        :config
        (progn
-         (add-to-list 'company-backends 'company-jedi)
+         (push 'company-jedi company-backends)
          ;; Disable auto-complete when we start jedi, because we don't want both
          ;; auto-complete and company running
          (add-hook 'jedi-mode-hook (lambda () (auto-complete-mode -1)))
@@ -435,7 +430,7 @@
      (use-package company-go
        :ensure t
        :config
-       (add-to-list 'company-backends 'company-go)
+       (push 'company-go company-backends)
        )
    #+end_src
 ** SQL
@@ -491,7 +486,7 @@
             (require 'merlin)
             (add-hook 'tuareg-mode-hook 'merlin-mode t)
             (setq merlin-command 'opam)
-            (add-to-list 'company-backends 'merlin-company-backend)
+            (push 'merlin-company-backend company-backends)
             ))
 
     #+end_src

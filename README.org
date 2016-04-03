@@ -555,13 +555,7 @@
      ;; Use rtags, a clang-based completion and navigation database for c++
      (use-package rtags
        :config
-       (progn
-         (setq rtags-autostart-diagnostics t)
-         (rtags-diagnostics)
-         (setq rtags-completions-enabled t)
-         (push 'company-rtags company-backends)
-         (require 'flycheck-rtags)
-         )
+       (require 'flycheck-rtags)
        )
    #+end_src
 ** Bison

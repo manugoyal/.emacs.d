@@ -64,6 +64,8 @@
        :config
        (progn
          (add-hook 'prog-mode-hook 'global-company-mode)
+         ;; company-capf is problematic
+         (delete 'company-capf company-backends)
          (bind-key "C-<tab>" 'company-complete)
          )
        )

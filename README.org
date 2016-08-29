@@ -556,6 +556,7 @@
      (use-package cc-mode)
      ;; Use rtags, a clang-based completion and navigation database for c++
      (use-package rtags
+       :ensure t
        :config
        (require 'flycheck-rtags)
        )

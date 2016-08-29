@@ -598,3 +598,10 @@
        :config
        (require 'yaml-mode))
    #+end_src
+** Perl6
+   #+begin_src emacs-lisp
+     (use-package perl6-mode
+       :ensure t
+       :defer t
+       )
+   #+end_src

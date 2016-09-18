@@ -42,3 +42,4 @@
 (org-babel-load-file configuration-file)
 
 (provide 'init)
+(put 'downcase-region 'disabled nil)

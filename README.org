@@ -335,7 +335,56 @@ contains most of the important customization, there is some initial set-up in
          )
        )
    #+end_src
-
+** C/C++
+   Rtags provides completion and symbol navigation for specific code-bases
+   #+begin_src emacs-lisp
+     ;; Use rtags for navigation
+     (use-package rtags
+       :ensure t
+       :config
+       (progn
+         ;; Start rtags upon entering a C/C++ file
+         (add-hook
+          'c-mode-common-hook
+          (lambda () (if (not (is-current-file-tramp))
+                         (rtags-start-process-unless-running))))
+         (add-hook
+          'c++-mode-common-hook
+          (lambda () (if (not (is-current-file-tramp))
+                         (rtags-start-process-unless-running))))
+         ;; Flycheck setup
+         (require 'flycheck-rtags)
+         (defun my-flycheck-rtags-setup ()
+           (flycheck-select-checker 'rtags)
+           ;; RTags creates more accurate overlays.
+           (setq-local flycheck-highlighting-mode nil)
+           (setq-local flycheck-check-syntax-automatically nil))
+         ;; c-mode-common-hook is also called by c++-mode
+         (add-hook 'c-mode-common-hook #'my-flycheck-rtags-setup)
+         ;; Keybindings
+         (rtags-enable-standard-keybindings c-mode-base-map "\C-cr")
+         )
+       )
+     ;; Use irony for completion
+     (use-package irony
+       :ensure t
+       :config
+       (progn
+         (add-hook
+          'c-mode-common-hook
+          (lambda () (if (not (is-current-file-tramp)) (irony-mode))))
+         (add-hook
+          'c++-mode-common-hook
+          (lambda () (if (not (is-current-file-tramp)) (irony-mode))))
+         (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+         (use-package company-irony
+           :ensure t
+           :config
+           (push 'company-irony company-backends)
+           )
+         )
+       )
+   #+end_src
 ** Python
    #+begin_src emacs-lisp
      ;; Sets the python interpreter to be ipython. To trick emacs into
@@ -475,11 +524,6 @@ contains most of the important customization, there is some initial set-up in
          (add-hook 'haskell-mode-hook 'haskell-doc-mode)
          )
        )
-   #+end_src
-** C/C++
-   #+begin_src emacs-lisp
-     (use-package cc-mode
-       :ensure t)
    #+end_src
 ** Bison
    #+begin_src emacs-lisp

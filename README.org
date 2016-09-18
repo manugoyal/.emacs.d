@@ -3,6 +3,11 @@
 #+EMAIL: manu.goyal2013@gmail.com
 #+OPTIONS: num:nil ^:nil
 
+This file includes custom settings for various Emacs features and makes use of
+numerous third-party packages to add functionality to Emacs. Although this file
+contains most of the important customization, there is some initial set-up in
+[[file:init.el][init.el]], and some additional package-specific variable settings in [[file:custom.el][custom.el]].
+
 * General
   Here we have general editing and system settings.
 ** Bind Key

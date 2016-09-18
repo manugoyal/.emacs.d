@@ -18,9 +18,13 @@ contains most of the important customization, there is some initial set-up in
        :ensure t)
    #+end_src
 ** VC
-   Disable the built-in version control support. Third-party packages are better
+   Disable version control when we're in TRAMP
    #+begin_src emacs-lisp
-     (setq vc-handled-backends nil)
+     (setq vc-ignore-dir-regexp
+           (format "\\(%s\\)\\|\\(%s\\)"
+                   vc-ignore-dir-regexp
+                   tramp-file-name-regexp))
+
    #+end_src
 ** Mac OSX Key Bindings
    We set the command key to meta and the alt key to super

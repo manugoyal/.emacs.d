@@ -21,6 +21,7 @@
     ((c-mode . "k&r")
      (c++-mode . "stroustrup")
      (awk-mode . "awk"))))
+ '(company-idle-delay 0.1)
  '(compilation-message-face (quote default))
  '(custom-safe-themes
    (quote
@@ -28,6 +29,7 @@
  '(eclimd-default-workspace "~/Documents/workspace")
  '(ediff-split-window-function (quote split-window-horizontally))
  '(fci-rule-color "#49483E")
+ '(fill-column 80)
  '(flycheck-checker-error-threshold 1000)
  '(flycheck-disabled-checkers (quote (emacs-lisp-checkdoc)))
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
@@ -41,7 +43,7 @@
      ("#A45E0A" . 70)
      ("#A41F99" . 85)
      ("#49483E" . 100))))
- '(magit-revert-buffers 1)
+ '(magit-revert-buffers 1 t)
  '(magit-use-overlays nil)
  '(package-selected-packages
    (quote

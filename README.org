@@ -12,98 +12,43 @@
      (use-package bind-key
        :ensure t)
    #+end_src
-** Shell Environment variables
-   We use the exec-path-from-shell package to grab some environment variable
-   definitions from the shell environment.
+** VC
+   Disable the built-in version control support. Third-party packages are better
    #+begin_src emacs-lisp
-     (use-package exec-path-from-shell
-       :ensure t
-       :config
-       (if (not (eq system-type 'windows-nt))
-           (progn
-             (if (not (string= "" (exec-path-from-shell-getenv "TMPDIR")))
-                 (add-to-list 'exec-path-from-shell-variables "TMPDIR"))
-             (add-to-list 'exec-path-from-shell-variables "LANG")
-             (add-to-list 'exec-path-from-shell-variables "LC_ALL")
-             (exec-path-from-shell-initialize)
-             )
-         )
-       )
-   #+end_src
-** Revert buffer
-   We re-bind the revert-buffer command, which is originally on super-u, which
-   is inconvenient for Mac.
-   #+begin_src emacs-lisp
-     (bind-key "M-U" 'revert-buffer)
-   #+end_src
-** TRAMP
-   We configure TRAMP, a package that provides transparent remote file access
-   over various protocols.
-   #+begin_src emacs-lisp
-     (use-package tramp
-       :ensure t
-       :init
-       (progn
-         ;; Tramp saves backups to the local directory, for speed.
-         (setq tramp-auto-save-directory "\"/tmp\"")
-         ;; Disable vc for tramp files
-         (setq vc-ignore-dir-regexp
-               (format "\\(%s\\)\\|\\(%s\\)"
-                       vc-ignore-dir-regexp
-                       tramp-file-name-regexp))
-         )
-       )
-   #+end_src
-** Company mode
-   Company is a generic auto-completion framework. It allows you to
-   define backends that source completions from different sources, so
-   you can have language-specific completions
-   #+begin_src emacs-lisp
-     (use-package company
-       :ensure t
-       :config
-       (progn
-         (add-hook 'prog-mode-hook 'global-company-mode)
-         ;; company-capf is problematic
-         (delete 'company-capf company-backends)
-         (bind-key "C-<tab>" 'company-complete)
-         )
-       )
-   #+end_src
-** Real-Time Syntax Checking
-   We use flycheck to check syntax and style in code. flycheck will
-   run language-specific code checkers based on the file type and
-   highlight problems.
-   #+begin_src emacs-lisp
-     (use-package flycheck
-       :ensure t
-       :init
-       (progn
-         (add-hook 'prog-mode-hook 'flycheck-mode)
-         ;; Set the flake8rc location for the flake8 checker
-         (setq flycheck-flake8rc "~/.config/flake8")
-         )
-       )
+     (setq vc-handled-backends nil)
    #+end_src
 ** Mac OSX Key Bindings
-   We set the alt, command, and super modifiers to meta.
+   We set the command key to meta and the alt key to super
    #+begin_src emacs-lisp
-     (setq ns-alternate-modifier 'meta)
+     (setq ns-alternate-modifier 'super)
      (setq ns-command-modifier 'meta)
-     (setq x-super-keysym 'meta)
+     ;; (setq x-super-keysym 'meta)
    #+end_src
 ** File Backups
    We store backups in a temporary folder.
    #+begin_src emacs-lisp
-     (setq backup-directory-alist
-           `((".*" . ,temporary-file-directory)))
-     (setq tramp-backup-directory-alist
-           `((".*" . ,temporary-file-directory)))
-     (setq auto-save-file-name-transforms
-           `((".*" ,temporary-file-directory t)))
+     ;; Backup file settings
+     (setq
+        backup-by-copying t      ; don't clobber symlinks
+        delete-old-versions t
+        kept-new-versions 6
+        kept-old-versions 2
+        version-control t)       ; use versioned backups
+     ;; Save by default in ~/.saves folder
+     (push (cons "." "~/.saves") backup-directory-alist)
+     ;; Disable backups whenever we're in tramp
+     (use-package tramp
+       :config
+       (add-hook
+        'find-file-hook
+        (lambda ()
+          (if (tramp-tramp-file-p (buffer-file-name (current-buffer)))
+              (setq-local make-backup-files nil))))
+       )
    #+end_src
 ** File Position Persistence
-   We save the cursor position at visited files in between sessions.
+   We save the cursor position at visited files in between sessions, except if
+   we're in a TRAMP buffer.
    #+begin_src emacs-lisp
      (use-package saveplace
        :ensure t
@@ -112,6 +57,11 @@
          (setq-default save-place t)
          (setq save-place-file "~/.emacs.d/.saved-places")
          )
+       :config
+       (setq save-place-ignore-files-regexp
+             (format "\\(%s\\)\\|\\(%s\\)"
+                     save-place-ignore-files-regexp
+                     tramp-file-name-regexp))
        )
    #+end_src
 ** camelCase Navigation
@@ -183,35 +133,6 @@
        (load-theme 'solarized-light)
        )
    #+end_src
-** Opening URLs
-   In order to open URLs in the correct external browser, we set the browser
-   program based on which executable exists (for now, we support mac's "open"
-   and gnome's "gnome-open").
-   #+begin_src emacs-lisp
-     (setq browse-url-generic-program
-           (cond
-            ((string= system-type "gnu/linux") "gnome-open")
-            (t "open")
-            )
-           )
-     ;; The function to open a url should use the generic program
-     (setq browse-url-browser-function 'browse-url-generic)
-   #+end_src
-** File Management
-   We configure dired, the emacs file manager.
-   #+begin_src emacs-lisp
-     (use-package dired+
-       :ensure t
-       :commands dired
-       :config
-       )
-     ;; Running dired-omit mode should hide all dotfiles
-     (setq dired-omit-files "^\\..*$")
-     ;; Never prompt for recursive copies of a directory
-     (setq dired-recursive-copies 'always)
-     ;; Never prompt for recursive deletes of a directory
-     (setq dired-recursive-deletes 'always)
-   #+end_src
 ** Window and Frame Navigation
    We define keybindings for navigating to different windows and frames. We copy
    the windmove-default-keybindings and framemove-default-keybindings functions
@@ -244,11 +165,6 @@
      (setq current-language-environment "UTF-8")
      (prefer-coding-system 'utf-8)
      (setenv "LC_CTYPE" "UTF-8")
-   #+end_src
-** Fill Column
-   We set the fill column to a reasonable default.
-   #+begin_src emacs-lisp
-     (setq-default fill-column 80)
    #+end_src
 ** Blinking Cursor
    We don't want the cursor to blink.
@@ -324,48 +240,6 @@
      ;; For vc-git-grep
      (require 'vc-git)
    #+end_src
-** Minibuffer completion
-   We use ido to complete wherever possible.
-   #+begin_src emacs-lisp
-     (use-package ido
-       :ensure t
-       :config
-       (progn
-         (ido-mode 1)
-         (ido-everywhere 1)
-         (setq ido-use-faces nil)
-         (setq ido-auto-merge-work-directories-length -1)
-         ;; Don't record history in ido.last
-         (setq ido-enable-last-directory-history nil)
-         (setq ido-record-commands nil)
-         (setq ido-max-work-directory-list 0)
-         (setq ido-max-work-file-list 0)
-         )
-       )
-     ;; flx-ido provides better completion than regular
-     (use-package flx-ido
-       :ensure t
-       :config
-       (flx-ido-mode 1)
-       )
-     ;; ido-ubiquitous provides ido completion for all minibuffer stuff
-     (use-package ido-ubiquitous
-       :ensure t
-       :config
-       (ido-ubiquitous-mode 1)
-       )
-     ;; smex provides ido completion in functions
-     (use-package smex
-       :ensure t
-       :config
-       (progn
-         (global-set-key (kbd "M-x") 'smex)
-         (global-set-key (kbd "M-X") 'smex-major-mode-commands)
-         ;; This is the old M-x.
-         (global-set-key (kbd "C-c C-c M-x") 'execute-extended-command)
-         )
-       )
-   #+end_src
 ** Buffer menu
    We use ibuffer, which is better than the default buffer menu
    #+begin_src emacs-lisp
@@ -394,26 +268,59 @@
        (bind-key "C-c f" 'find-file-in-project-by-selected)
        )
    #+end_src
-* Languages
-  Here we have language-specific settings.
-** Python
+** Dired
+   We configure dired, the emacs file manager.
    #+begin_src emacs-lisp
-     (use-package jedi
-       :ensure t
-       :init
-       (add-hook 'python-mode-hook 'jedi:setup)
-       )
-     (use-package company-jedi
+     ;; Never prompt for recursive copies of a directory
+     (setq dired-recursive-copies 'always)
+     ;; Never prompt for recursive deletes of a directory
+     (setq dired-recursive-deletes 'always)
+   #+end_src
+* Languages
+  Here we have programming-language-related settings
+** Company mode
+   Company is a generic auto-completion framework. It allows you to
+   define backends that source completions from different sources, so
+   you can have language-specific completions
+   #+begin_src emacs-lisp
+     (use-package company
        :ensure t
        :config
        (progn
-         (push 'company-jedi company-backends)
-         ;; Disable auto-complete when we start jedi, because we don't want both
-         ;; auto-complete and company running
-         (add-hook 'jedi-mode-hook (lambda () (auto-complete-mode -1)))
+         ;; Enable company mode as long as we're not in TRAMP
+         (add-hook
+          'prog-mode-hook
+          (lambda ()
+            (if (not (tramp-tramp-file-p (buffer-file-name (current-buffer))))
+                (company-mode 1)))
+          )
+         ;; company-capf is problematic
+         (delete 'company-capf company-backends)
+         (bind-key "C-<tab>" 'company-complete)
          )
        )
+   #+end_src
+** Real-Time Syntax Checking
+   We use flycheck to check syntax and style in code. flycheck will
+   run language-specific code checkers based on the file type and
+   highlight problems.
+   #+begin_src emacs-lisp
+     (use-package flycheck
+       :ensure t
+       :init
+       (progn
+         ;; Enable flycheck mode as long as we're not in TRAMP
+         (add-hook
+          'prog-mode-hook
+          (lambda ()
+            (if (not (tramp-tramp-file-p (buffer-file-name (current-buffer))))
+                (flycheck-mode 1))))
+         )
+       )
+   #+end_src
 
+** Python
+   #+begin_src emacs-lisp
      ;; Sets the python interpreter to be ipython. To trick emacs into
      ;; thinking we're still running regular python, we run ipython in
      ;; classic mode.
@@ -429,6 +336,7 @@
        :config
        (exec-path-from-shell-copy-env "GOPATH")
        )
+
      (use-package company-go
        :ensure t
        :config
@@ -553,13 +461,8 @@
    #+end_src
 ** C/C++
    #+begin_src emacs-lisp
-     (use-package cc-mode)
-     ;; Use rtags, a clang-based completion and navigation database for c++
-     (use-package rtags
-       :ensure t
-       :config
-       (require 'flycheck-rtags)
-       )
+     (use-package cc-mode
+       :ensure t)
    #+end_src
 ** Bison
    #+begin_src emacs-lisp

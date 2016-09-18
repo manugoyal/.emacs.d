@@ -301,13 +301,8 @@ contains most of the important customization, there is some initial set-up in
        :ensure t
        :config
        (progn
-         ;; Enable company mode as long as we're not in TRAMP
-         (add-hook
-          'prog-mode-hook
-          (lambda ()
-            (if (not (tramp-tramp-file-p (buffer-file-name (current-buffer))))
-                (company-mode 1)))
-          )
+         ;; Enable company mode in every programming mode
+         (add-hook 'prog-mode-hook 'company-mode)
          ;; Set my own default company backends
          (setq-default
           company-backends

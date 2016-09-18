@@ -294,9 +294,19 @@
             (if (not (tramp-tramp-file-p (buffer-file-name (current-buffer))))
                 (company-mode 1)))
           )
-         ;; company-capf is problematic
-         (delete 'company-capf company-backends)
-         (bind-key "C-<tab>" 'company-complete)
+         ;; Set my own default company backends
+         (setq-default
+          company-backends
+          '(
+            company-nxml
+            company-css
+            company-cmake
+            company-files
+            company-dabbrev-code
+            company-keywords
+            company-dabbrev
+            company-elisp
+            ))
          )
        )
    #+end_src

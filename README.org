@@ -282,14 +282,6 @@ contains most of the important customization, there is some initial set-up in
        (bind-key "C-c f" 'find-file-in-project-by-selected)
        )
    #+end_src
-** Dired
-   We configure dired, the emacs file manager.
-   #+begin_src emacs-lisp
-     ;; Never prompt for recursive copies of a directory
-     (setq dired-recursive-copies 'always)
-     ;; Never prompt for recursive deletes of a directory
-     (setq dired-recursive-deletes 'always)
-   #+end_src
 * Languages
   Here we have programming-language-related settings
 ** Company mode

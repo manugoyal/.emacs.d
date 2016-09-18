@@ -31,7 +31,6 @@ contains most of the important customization, there is some initial set-up in
    #+begin_src emacs-lisp
      (setq ns-alternate-modifier 'super)
      (setq ns-command-modifier 'meta)
-     ;; (setq x-super-keysym 'meta)
    #+end_src
 ** TRAMP
    There are a lot of settings we want to enable only if we are or are not

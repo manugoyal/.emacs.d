@@ -33,6 +33,14 @@ contains most of the important customization, there is some initial set-up in
      (setq ns-command-modifier 'meta)
      ;; (setq x-super-keysym 'meta)
    #+end_src
+** TRAMP
+   There are a lot of settings we want to enable only if we are or are not
+   visiting a TRAMP file, so we provide a helper method to check if we're in a
+   tramp file.
+   #+begin_src emacs-lisp
+     (defun is-current-file-tramp ()
+       (tramp-tramp-file-p (buffer-file-name (current-buffer))))
+   #+end_src
 ** File Backups
    We store backups in a temporary folder.
    #+begin_src emacs-lisp
@@ -50,9 +58,7 @@ contains most of the important customization, there is some initial set-up in
        :config
        (add-hook
         'find-file-hook
-        (lambda ()
-          (if (tramp-tramp-file-p (buffer-file-name (current-buffer)))
-              (setq-local make-backup-files nil))))
+        (lambda () (if (is-current-file-tramp) (setq-local make-backup-files nil))))
        )
    #+end_src
 ** File Position Persistence
@@ -331,9 +337,7 @@ contains most of the important customization, there is some initial set-up in
          ;; Enable flycheck mode as long as we're not in TRAMP
          (add-hook
           'prog-mode-hook
-          (lambda ()
-            (if (not (tramp-tramp-file-p (buffer-file-name (current-buffer))))
-                (flycheck-mode 1))))
+          (lambda () (if (not (is-current-file-tramp)) (flycheck-mode 1))))
          )
        )
    #+end_src

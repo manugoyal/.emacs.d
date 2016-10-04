@@ -378,13 +378,42 @@ contains most of the important customization, there is some initial set-up in
        )
    #+end_src
 ** Python
+   We use elpy
    #+begin_src emacs-lisp
-     ;; Sets the python interpreter to be ipython. To trick emacs into
-     ;; thinking we're still running regular python, we run ipython in
-     ;; classic mode.
-     (setq
-      python-shell-interpreter "ipython"
-      python-shell-interpreter-args "-i --classic")
+     (use-package elpy
+       :ensure t
+       :config
+       (progn
+         (elpy-enable)
+         (elpy-use-ipython)
+         )
+       )
+   #+end_src
+** LaTeX
+   #+begin_src emacs-lisp
+     ;; Auctex
+     (use-package auctex
+       :ensure t
+       :mode ("\\.tex\\'" . latex-mode)
+       :commands (latex-mode LaTeX-mode plain-tex-mode)
+       :init
+       (progn
+         (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
+         (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+         (add-hook 'LaTeX-mode-hook #'flyspell-mode)
+         (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
+         (setq TeX-auto-save t
+               TeX-parse-self t
+               TeX-save-query nil
+               TeX-PDF-mode t)
+         ))
+
+     ;; Use company-auctex
+     (use-package company-auctex
+       :ensure t
+       :config
+       (company-auctex-init)
+     )
    #+end_src
 ** Go
    #+begin_src emacs-lisp

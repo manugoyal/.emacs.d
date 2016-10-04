@@ -3,6 +3,7 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        TeX-insert-backslash
         autopair-insert-opening
         autopair-insert-or-skip-quote
         autopair-skip-close-maybe

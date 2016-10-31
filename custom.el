@@ -37,6 +37,8 @@
  '(fill-column 80)
  '(flycheck-checker-error-threshold 1000)
  '(flycheck-disabled-checkers (quote (emacs-lisp-checkdoc)))
+ '(godoc-command "godoc")
+ '(godoc-use-completing-read t)
  '(highlight-changes-colors (quote ("#FD5FF0" "#AE81FF")))
  '(highlight-tail-colors
    (quote

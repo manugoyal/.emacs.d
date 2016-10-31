@@ -415,13 +415,27 @@ contains most of the important customization, there is some initial set-up in
        (company-auctex-init)
      )
    #+end_src
+** HTML/XML/Javascript
+   #+begin_src emacs-lisp
+     (use-package web-mode
+       :ensure t
+       :config
+       (progn
+         ;; Enable web mode in the following modes
+         (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
+         (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
+         (add-to-list 'auto-mode-alist '("\\.jsx?\\'" . web-mode))
+         ;; Set the content type to "jsx" for the following file extensions
+         (setq web-mode-content-types-alist
+               '(("jsx" . "\\.js[x]?\\'")))
+         )
+       )
+   #+end_src
 ** Go
    #+begin_src emacs-lisp
      (use-package go-mode
        :ensure t
        :mode "\\.go"
-       :config
-       (exec-path-from-shell-copy-env "GOPATH")
        )
 
      (use-package company-go
@@ -437,21 +451,6 @@ contains most of the important customization, there is some initial set-up in
        :mode ("\\.sql" . sql-mode)
        )
      (setq sql-mysql-login-params (quote (user server port password)))
-   #+end_src
-** HTML/XML/Javascript
-   #+begin_src emacs-lisp
-     (use-package js2-mode
-       :ensure t
-       :mode "\\.js"
-       )
-     (use-package web-mode
-       :ensure t
-       :mode "\\.jsx"
-       :config
-       (progn
-         (setq web-mode-enable-auto-quoting nil)
-         )
-       )
    #+end_src
 ** OCaml
     #+begin_src emacs-lisp

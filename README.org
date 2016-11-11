@@ -494,42 +494,6 @@ contains most of the important customization, there is some initial set-up in
        (add-hook 'css-mode-hook 'rainbow-mode)
        )
    #+end_src
-** LaTeX
-   #+begin_src emacs-lisp
-     ;; Auctex
-     (use-package auctex
-       :ensure t
-       :mode ("\\.tex\\'" . latex-mode)
-       :commands (latex-mode LaTeX-mode plain-tex-mode)
-       :init
-       (progn
-         (add-hook 'LaTeX-mode-hook #'LaTeX-preview-setup)
-         (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
-         (add-hook 'LaTeX-mode-hook #'flyspell-mode)
-         (add-hook 'LaTeX-mode-hook #'turn-on-reftex)
-         (setq TeX-auto-save t
-               TeX-parse-self t
-               TeX-save-query nil
-               TeX-PDF-mode t)
-         (setq-default TeX-master nil)))
-
-     (use-package preview
-       :commands LaTeX-preview-setup
-       :init
-       (progn
-         (setq-default
-          preview-scale 1.4
-          preview-scale-function
-          '(lambda ()
-             (* (/ 10.0 (preview-document-pt)) preview-scale)))))
-
-     ;; Use company-auctex
-     (use-package company-auctex
-       :ensure t
-       :config
-       (company-auctex-init)
-     )
-   #+end_src
 ** Haskell
    #+begin_src emacs-lisp
      (use-package haskell-mode

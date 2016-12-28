@@ -392,6 +392,9 @@ contains most of the important customization, there is some initial set-up in
        (progn
          (elpy-enable)
          (elpy-use-ipython)
+         ;; Fixes the weird prompt in new IPython versions
+         (setq python-shell-interpreter "ipython"
+               python-shell-interpreter-args "--simple-prompt -i")
          )
        )
    #+end_src

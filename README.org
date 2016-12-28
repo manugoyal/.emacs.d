@@ -282,12 +282,6 @@ contains most of the important customization, there is some initial set-up in
        (bind-key "C-c f" 'find-file-in-project-by-selected)
        )
    #+end_src
-** Match angle brackets
-   Add angle brackets (< and >) as balanced expressions
-   #+begin_src emacs-lisp
-     (modify-syntax-entry ?< "(>")
-     (modify-syntax-entry ?> ")<")
-   #+end_src
 * Languages
   Here we have programming-language-related settings
 ** Company mode

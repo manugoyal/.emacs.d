@@ -139,14 +139,6 @@ contains most of the important customization, there is some initial set-up in
        (define-key flyspell-mouse-map [down-mouse-3] #'flyspell-correct-word)
        )
    #+end_src
-** Color Scheme
-   #+begin_src emacs-lisp
-     (use-package solarized-theme
-       :ensure t
-       :init
-       (load-theme 'solarized-light)
-       )
-   #+end_src
 ** Window and Frame Navigation
    We define keybindings for navigating to different windows and frames. We copy
    the windmove-default-keybindings and framemove-default-keybindings functions

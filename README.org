@@ -548,3 +548,31 @@ contains most of the important customization, there is some initial set-up in
        :defer t
        )
    #+end_src
+** Rust
+   #+begin_src emacs-lisp
+     (use-package rust-mode
+       :ensure t
+       )
+
+     (use-package cargo
+       :ensure t
+       :config
+       (add-hook 'rust-mode-hook 'cargo-minor-mode)
+       )
+
+     (use-package racer
+       :ensure t
+       :config
+       (progn
+         (add-hook 'rust-mode-hook #'racer-mode)
+         (add-hook 'racer-mode-hook #'eldoc-mode)
+         (add-hook 'racer-mode-hook #'company-mode)
+         )
+       )
+
+     (use-package flycheck-rust
+       :ensure t
+       :config
+       (add-hook 'flycheck-mode-hook #'flycheck-rust-setup)
+       )
+   #+end_src

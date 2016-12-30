@@ -113,10 +113,7 @@ contains most of the important customization, there is some initial set-up in
    #+begin_src emacs-lisp
      (use-package multiple-cursors
        :ensure t
-       :bind (("C-S-C C-S-C" . mc/edit-lines)
-              ("C->" . mc/mark-next-like-this)
-              ("C-<" . mc/mark-previous-like-this)
-              ("C-=" . mc/mark-all-like-this-dwim))
+       :bind ("C-S-C C-S-C" . mc/edit-lines)
        )
    #+end_src
 ** Completion in an ELISP Minibffer
@@ -509,24 +506,6 @@ contains most of the important customization, there is some initial set-up in
      (use-package bison-mode
        :ensure t
        :mode "\\.y"
-       )
-   #+end_src
-** Scala
-   #+begin_src emacs-lisp
-     (use-package scala-mode2
-       :ensure t
-       )
-
-     (use-package ensime
-       :ensure t
-       :config
-       (add-hook 'scala-mode-hook 'ensime-scala-mode-hook))
-   #+end_src
-** Clojure
-   #+begin_src emacs-lisp
-     ;; Use the cider package
-     (use-package cider
-       :ensure t
        )
    #+end_src
 ** Erlang

@@ -33,12 +33,17 @@ contains most of the important customization, there is some initial set-up in
      (setq ns-command-modifier 'meta)
    #+end_src
 ** TRAMP
-   There are a lot of settings we want to enable only if we are or are not
-   visiting a TRAMP file, so we provide a helper method to check if we're in a
-   tramp file.
+   TRAMP settings
    #+begin_src emacs-lisp
+     ;; There are a lot of settings we want to enable only if we are or are not
+     ;; visiting a TRAMP file, so we provide a helper method to check if we're in a
+     ;; tramp file.
      (defun is-current-file-tramp ()
        (tramp-tramp-file-p (buffer-file-name (current-buffer))))
+
+     (add-hook
+      'find-file-hook
+      (lambda () (if (is-current-file-tramp) (setq-local make-backup-files nil))))
    #+end_src
 ** File Backups
    We store backups in a temporary folder.
@@ -52,13 +57,6 @@ contains most of the important customization, there is some initial set-up in
         version-control t)       ; use versioned backups
      ;; Save by default in ~/.saves folder
      (push (cons "." "~/.saves") backup-directory-alist)
-     ;; Disable backups whenever we're in tramp
-     (use-package tramp
-       :config
-       (add-hook
-        'find-file-hook
-        (lambda () (if (is-current-file-tramp) (setq-local make-backup-files nil))))
-       )
    #+end_src
 ** File Position Persistence
    We save the cursor position at visited files in between sessions, except if
